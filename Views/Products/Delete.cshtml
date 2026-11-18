@@ -1,0 +1,51 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="page-heading">
+    <h1>Delete Product</h1>
+    <p>Confirm before removing this product.</p>
+</div>
+
+<div class="panel versum-form danger-panel">
+
+    <h5>Are you sure you want to delete this product?</h5>
+
+    <p>
+        <strong>@Model.ProductCode</strong>
+        — @Model.Name
+    </p>
+
+    <p class="text-muted">
+        Category: @Model.Category?.Name
+    </p>
+
+    <p class="text-muted">
+        Current Stock: @Model.CurrentStock
+    </p>
+
+    <p class="small text-danger">
+        This action cannot be undone.
+        Products with stock cannot be deleted.
+    </p>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">
+                Confirm Delete
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>

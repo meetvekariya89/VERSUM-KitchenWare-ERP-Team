@@ -1,0 +1,119 @@
+﻿
+@model IEnumerable<VERSUM.KitchenWareERP.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="page-heading">
+    <h1>Product Inventory</h1>
+    <p>Manage finished kitchenware products and stock levels.</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="versum-alert">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="panel">
+    <div class="inventory-toolbar">
+
+        <form asp-action="Index" method="get"
+              class="inventory-search">
+
+            <input type="search"
+                   name="search"
+                   value="@ViewBag.Search"
+                   placeholder="Search name or product code..." />
+
+            <button type="submit" class="versum-btn">
+                <i class="bi bi-search"></i> Search
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Reset
+            </a>
+        </form>
+
+        <a asp-action="Create" class="versum-btn">
+            <i class="bi bi-plus-lg"></i>
+            Add Product
+        </a>
+    </div>
+
+    <div class="inventory-table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Product Code</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.ProductCode</strong></td>
+                        <td>@item.Name</td>
+                        <td>@item.Category?.Name</td>
+                        <td>₹@item.SellingPrice.ToString("N2")</td>
+                        <td>
+                            @item.CurrentStock
+
+                            @if (item.CurrentStock <= item.MinimumStock)
+                            {
+                                <span class="status-pill">Low</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="status-active">Active</span>
+                            }
+                            else
+                            {
+                                <span class="status-inactive">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="action-links">
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="delete-link">
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            No products found.
+                            Click Add Product to get started.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

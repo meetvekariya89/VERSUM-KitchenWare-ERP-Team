@@ -1,0 +1,60 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Category
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="page-heading">
+    <h1>Edit Category</h1>
+    <p>Update category information.</p>
+</div>
+
+<div class="panel versum-form">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-error"></div>
+
+        <div class="form-field">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="versum-input" />
+            <span asp-validation-for="Name"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"
+                      class="versum-input"
+                      rows="4"></textarea>
+            <span asp-validation-for="Description"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label>
+                <input asp-for="IsActive" />
+                Active Category
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Update Category
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,156 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Product
+
+<div asp-validation-summary="ModelOnly"
+     class="validation-error"></div>
+
+<div class="form-field">
+    <label asp-for="ProductCode">
+        Product Code
+    </label>
+
+    <input asp-for="ProductCode"
+           class="versum-input"
+           placeholder="e.g. PB-001" />
+
+    <span asp-validation-for="ProductCode"
+          class="validation-error"></span>
+</div>
+
+<div class="form-field">
+    <label asp-for="Name">
+        Product Name
+    </label>
+
+    <input asp-for="Name"
+           class="versum-input"
+           placeholder="e.g. Stainless Steel Peeler Blade" />
+
+    <span asp-validation-for="Name"
+          class="validation-error"></span>
+</div>
+
+<div class="form-field">
+    <label asp-for="CategoryId">
+        Product Category
+    </label>
+
+    <select asp-for="CategoryId"
+            asp-items="ViewBag.Categories"
+            class="versum-input">
+
+        <option value="0">
+            -- Select Category --
+        </option>
+
+    </select>
+
+    <span asp-validation-for="CategoryId"
+          class="validation-error"></span>
+</div>
+
+<div class="form-field">
+    <label asp-for="Description">
+        Description
+    </label>
+
+    <textarea asp-for="Description"
+              class="versum-input"
+              rows="3"
+              placeholder="Enter product description"></textarea>
+
+    <span asp-validation-for="Description"
+          class="validation-error"></span>
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="CostPrice">
+                Cost Price (₹)
+            </label>
+
+            <input asp-for="CostPrice"
+                   type="number"
+                   step="0.01"
+                   min="0"
+                   class="versum-input" />
+
+            <span asp-validation-for="CostPrice"
+                  class="validation-error"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="SellingPrice">
+                Selling Price (₹)
+            </label>
+
+            <input asp-for="SellingPrice"
+                   type="number"
+                   step="0.01"
+                   min="0"
+                   class="versum-input" />
+
+            <span asp-validation-for="SellingPrice"
+                  class="validation-error"></span>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="MinimumStock">
+                Minimum Stock Alert Level
+            </label>
+
+            <input asp-for="MinimumStock"
+                   type="number"
+                   min="0"
+                   step="1"
+                   class="versum-input" />
+
+            <span asp-validation-for="MinimumStock"
+                  class="validation-error"></span>
+
+            <div class="form-hint">
+                Alert when stock reaches this quantity.
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="CurrentStock">
+                Current Stock Quantity
+            </label>
+
+            <input asp-for="CurrentStock"
+                   type="number"
+                   min="0"
+                   step="1"
+                   class="versum-input"
+                   placeholder="Enter available stock" />
+
+            <span asp-validation-for="CurrentStock"
+                  class="validation-error"></span>
+
+            <div class="form-hint">
+                Enter or update available product stock.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="form-field">
+    <label>
+        <input asp-for="IsActive" />
+        Active Product
+    </label>
+</div>

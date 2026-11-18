@@ -1,0 +1,45 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Product
+
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="page-heading">
+    <h1>Add New Product</h1>
+    <p>Register a new finished kitchenware product.</p>
+</div>
+
+<div class="panel versum-form">
+
+    <form asp-controller="Products"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <partial name="_ProductForm" model="Model" />
+
+        <div class="form-actions">
+
+            <button type="submit"
+                    class="versum-btn">
+                <i class="bi bi-check-circle"></i>
+                Save Product
+            </button>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

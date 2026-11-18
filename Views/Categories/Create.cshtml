@@ -1,0 +1,68 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Category
+
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<div class="page-heading">
+    <h1>Add New Category</h1>
+    <p>Create a product group for VERSUM inventory.</p>
+</div>
+
+<div class="panel versum-form">
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-error"></div>
+
+        <div class="form-field">
+            <label asp-for="Name"></label>
+            <input asp-for="Name"
+                   class="versum-input"
+                   placeholder="e.g. Peeler Blades" />
+            <span asp-validation-for="Name"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"
+                      class="versum-input"
+                      rows="4"
+                      placeholder="Category description"></textarea>
+            <span asp-validation-for="Description"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label>
+                <input asp-for="IsActive" />
+                Active Category
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Save Category
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+    @if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Error"]
+    </div>
+}
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,147 @@
+﻿
+@model VERSUM.KitchenWareERP.Models.Product
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Edit Product</h1>
+        <p>Update product details and available stock.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+
+    <form asp-controller="Products"
+          asp-action="Edit"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-error"></div>
+
+        <div class="form-field">
+            <label asp-for="ProductCode">Product Code</label>
+            <input asp-for="ProductCode"
+                   class="versum-input" />
+            <span asp-validation-for="ProductCode"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Name">Product Name</label>
+            <input asp-for="Name"
+                   class="versum-input" />
+            <span asp-validation-for="Name"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="CategoryId">Product Category</label>
+            <select asp-for="CategoryId"
+                    asp-items="ViewBag.Categories"
+                    class="versum-input">
+                <option value="0">-- Select Category --</option>
+            </select>
+            <span asp-validation-for="CategoryId"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Description">Description</label>
+            <textarea asp-for="Description"
+                      rows="3"
+                      class="versum-input"></textarea>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="CostPrice">Cost Price (₹)</label>
+                    <input asp-for="CostPrice"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           class="versum-input" />
+                    <span asp-validation-for="CostPrice"
+                          class="validation-error"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="SellingPrice">Selling Price (₹)</label>
+                    <input asp-for="SellingPrice"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           class="versum-input" />
+                    <span asp-validation-for="SellingPrice"
+                          class="validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="MinimumStock">
+                        Minimum Stock Alert Level
+                    </label>
+                    <input asp-for="MinimumStock"
+                           type="number"
+                           min="0"
+                           step="1"
+                           class="versum-input" />
+                    <span asp-validation-for="MinimumStock"
+                          class="validation-error"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="CurrentStock">
+                        Current Stock Quantity
+                    </label>
+                    <input asp-for="CurrentStock"
+                           type="number"
+                           min="0"
+                           step="1"
+                           class="versum-input" />
+                    <span asp-validation-for="CurrentStock"
+                          class="validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label>
+                <input asp-for="IsActive" />
+                Active Product
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                <i class="bi bi-check-circle"></i>
+                Update Product
+            </button>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
