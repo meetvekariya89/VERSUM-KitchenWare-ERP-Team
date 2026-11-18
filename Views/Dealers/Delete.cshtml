@@ -1,0 +1,40 @@
+﻿@model VERSUM.KitchenWareERP.Models.Dealer
+
+@{
+    ViewData["Title"] = "Delete Dealer";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Delete Dealer</h1>
+        <p>Confirm dealer deletion.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <h4>@Model.Name</h4>
+    <p>Dealer Code: @Model.DealerCode</p>
+    <p>Phone: @Model.Phone</p>
+    <p>City: @Model.City</p>
+
+    <p class="text-danger">
+        This will permanently delete the dealer.
+    </p>
+
+    <form asp-action="Delete"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Confirm Delete
+            </button>
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,38 @@
+﻿@model VERSUM.KitchenWareERP.Models.Dealer
+
+@{
+    ViewData["Title"] = "Edit Dealer";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Edit Dealer</h1>
+        <p>Update dealer information.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <form asp-action="Edit"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <partial name="_DealerForm" model="Model" />
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Update Dealer
+            </button>
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

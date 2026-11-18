@@ -1,0 +1,81 @@
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.Dealer>
+
+@{
+    ViewData["Title"] = "Dealers Management";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Dealers Management</h1>
+        <p>Manage dealers and distributors.</p>
+    </div>
+
+    <a asp-action="Create" class="versum-btn">
+        <i class="bi bi-plus-circle"></i> Add Dealer
+    </a>
+</div>
+
+<div class="panel">
+    <form method="get" asp-action="Index"
+          class="d-flex gap-2 mb-3">
+        <input name="search" type="search"
+               value="@ViewBag.Search"
+               class="versum-input"
+               placeholder="Search dealers..." />
+        <button type="submit" class="versum-btn">
+            Search
+        </button>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Dealer Name</th>
+                    <th>Contact</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>GSTIN</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td><strong>@d.DealerCode</strong></td>
+                        <td>@d.Name</td>
+                        <td>@(d.ContactPerson ?? "-")</td>
+                        <td>@d.Phone</td>
+                        <td>@d.City</td>
+                        <td>@(d.GSTNumber ?? "-")</td>
+                        <td>
+                            <span class="versum-status @(d.IsActive ? "versum-status-active" : "versum-status-inactive")">
+                                @(d.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-action="Edit"
+                               asp-route-id="@d.Id">Edit</a>
+                            |
+                            <a asp-action="Delete"
+                               asp-route-id="@d.Id"
+                               class="text-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            No dealers found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

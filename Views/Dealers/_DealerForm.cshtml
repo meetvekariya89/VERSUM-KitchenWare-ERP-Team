@@ -1,0 +1,96 @@
+﻿@model VERSUM.KitchenWareERP.Models.Dealer
+
+<div asp-validation-summary="ModelOnly"
+     class="validation-error"></div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="DealerCode">Dealer Code</label>
+            <input asp-for="DealerCode" class="versum-input"
+                   placeholder="DLR-001" />
+            <span asp-validation-for="DealerCode"
+                  class="validation-error"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="Name">Dealer / Business Name</label>
+            <input asp-for="Name" class="versum-input" />
+            <span asp-validation-for="Name"
+                  class="validation-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="ContactPerson">Contact Person</label>
+            <input asp-for="ContactPerson" class="versum-input" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="Phone">Phone Number</label>
+            <input asp-for="Phone" type="tel" class="versum-input" />
+            <span asp-validation-for="Phone"
+                  class="validation-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" type="email" class="versum-input" />
+            <span asp-validation-for="Email"
+                  class="validation-error"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="GSTNumber">GST Number</label>
+            <input asp-for="GSTNumber" class="versum-input" />
+            <span asp-validation-for="GSTNumber"
+                  class="validation-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="form-field">
+    <label asp-for="Address">Business Address</label>
+    <textarea asp-for="Address" rows="3"
+              class="versum-input"></textarea>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-field">
+            <label asp-for="City">City</label>
+            <input asp-for="City" class="versum-input" />
+            <span asp-validation-for="City"
+                  class="validation-error"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-field">
+            <label asp-for="State">State</label>
+            <input asp-for="State" class="versum-input" />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-field">
+            <label asp-for="Pincode">PIN Code</label>
+            <input asp-for="Pincode" class="versum-input" />
+        </div>
+    </div>
+</div>
+
+<div class="form-field">
+    <label>
+        <input asp-for="IsActive" />
+        Active Dealer
+    </label>
+</div>
