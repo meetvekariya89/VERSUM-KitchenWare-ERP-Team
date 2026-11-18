@@ -1,0 +1,509 @@
+﻿@model VERSUM.KitchenWareERP.Models.DashboardViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Executive Dashboard";
+
+    int totalAlerts =
+        Model.LowStockProducts + Model.LowStockRawMaterials;
+
+    var monthsJson = JsonSerializer.Serialize(
+        Model.MonthlySales.Select(x => x.Label));
+
+    var salesJson = JsonSerializer.Serialize(
+        Model.MonthlySales.Select(x => x.Sales));
+}
+
+<div class="page-heading executive-heading">
+    <div>
+        <div class="dashboard-eyebrow">
+            <span class="dashboard-live-dot"></span>
+            VERSUM / EXECUTIVE OVERVIEW
+        </div>
+        <h1>Business Overview</h1>
+        <p>Everything happening across your kitchenware operations.</p>
+    </div>
+
+    <div class="executive-heading-actions">
+        <span class="dashboard-date">
+            <i class="bi bi-calendar3"></i>
+            @DateTime.Today.ToString("dd MMMM yyyy")
+        </span>
+        <a asp-controller="Reports" asp-action="Index"
+           class="versum-btn">
+            <i class="bi bi-bar-chart-line"></i>
+            View Reports
+        </a>
+    </div>
+</div>
+
+<div class="executive-hero">
+    <div>
+        <div class="hero-eyebrow">YOUR BUSINESS AT A GLANCE</div>
+        <h2>Manufacturing intelligence,<br />all in one place.</h2>
+        <p>
+            Track sales, manage inventory and keep production
+            moving with real-time business information.
+        </p>
+        <a asp-controller="Sales" asp-action="Create"
+           class="hero-action">
+            <i class="bi bi-plus-lg"></i>
+            Create Sales Invoice
+        </a>
+    </div>
+
+    <div class="hero-decoration" aria-hidden="true">
+        <i class="bi bi-boxes"></i>
+    </div>
+</div>
+
+<div class="executive-stats">
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Total Sales Revenue</span>
+            <div class="executive-stat-icon orange">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            ₹@Model.TotalSales.ToString("N2")
+        </div>
+        <div class="executive-stat-bottom">
+            @Model.TotalSalesInvoices completed invoices
+        </div>
+    </div>
+
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Purchase Value</span>
+            <div class="executive-stat-icon blue">
+                <i class="bi bi-bag-check"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            ₹@Model.TotalPurchases.ToString("N2")
+        </div>
+        <div class="executive-stat-bottom">
+            Recorded raw material purchases
+        </div>
+    </div>
+
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Finished Inventory Value</span>
+            <div class="executive-stat-icon purple">
+                <i class="bi bi-box-seam"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            ₹@Model.FinishedInventoryValue.ToString("N2")
+        </div>
+        <div class="executive-stat-bottom">
+            Based on current product cost
+        </div>
+    </div>
+
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Low Stock Alerts</span>
+            <div class="executive-stat-icon red">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            @totalAlerts
+        </div>
+        <div class="executive-stat-bottom">
+            @Model.LowStockProducts products ·
+            @Model.LowStockRawMaterials materials
+        </div>
+    </div>
+
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Finished Products</span>
+            <div class="executive-stat-icon blue">
+                <i class="bi bi-grid"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            @Model.TotalProducts
+        </div>
+        <div class="executive-stat-bottom">
+            @Model.TotalCategories product categories
+        </div>
+    </div>
+
+    <div class="executive-stat-card">
+        <div class="executive-stat-top">
+            <span>Production Batches</span>
+            <div class="executive-stat-icon green">
+                <i class="bi bi-gear-wide-connected"></i>
+            </div>
+        </div>
+        <div class="executive-stat-number">
+            @Model.TotalProductionBatches
+        </div>
+        <div class="executive-stat-bottom">
+            @Model.TotalRawMaterials material types ·
+            @Model.TotalDealers dealers
+        </div>
+    </div>
+</div>
+
+<div class="executive-main-grid">
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Sales Performance</div>
+                <div class="panel-subtitle">
+                    Monthly sales revenue over the last six calendar months
+                </div>
+            </div>
+            <span class="executive-tag">Last 6 Months</span>
+        </div>
+
+        <div class="executive-chart">
+            <canvas id="executiveSalesChart"></canvas>
+        </div>
+    </section>
+
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Quick Actions</div>
+                <div class="panel-subtitle">
+                    Frequently used ERP operations
+                </div>
+            </div>
+        </div>
+
+        <div class="executive-action-list">
+            <a asp-controller="Sales" asp-action="Create"
+               class="executive-action">
+                <span class="executive-action-icon">
+                    <i class="bi bi-receipt"></i>
+                </span>
+                <span>
+                    <strong>Create Sales Invoice</strong>
+                    <small>Record dealer sales</small>
+                </span>
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+            <a asp-controller="Purchases" asp-action="Create"
+               class="executive-action">
+                <span class="executive-action-icon">
+                    <i class="bi bi-cart-plus"></i>
+                </span>
+                <span>
+                    <strong>Record Purchase</strong>
+                    <small>Add raw material stock</small>
+                </span>
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+            <a asp-controller="Production" asp-action="Create"
+               class="executive-action">
+                <span class="executive-action-icon">
+                    <i class="bi bi-gear"></i>
+                </span>
+                <span>
+                    <strong>Start Production</strong>
+                    <small>Create manufacturing batch</small>
+                </span>
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+            <a asp-controller="Products" asp-action="Create"
+               class="executive-action">
+                <span class="executive-action-icon">
+                    <i class="bi bi-box-seam"></i>
+                </span>
+                <span>
+                    <strong>Add Product</strong>
+                    <small>Expand finished inventory</small>
+                </span>
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+        </div>
+    </section>
+</div>
+
+<div class="executive-main-grid">
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Recent Sales</div>
+                <div class="panel-subtitle">
+                    Latest dealer sales invoices
+                </div>
+            </div>
+            <a asp-controller="Sales" asp-action="Index"
+               class="executive-text-link">
+                View All
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Dealer</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sale in Model.RecentSales)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Sales"
+                                   asp-action="Details"
+                                   asp-route-id="@sale.Id"
+                                   class="executive-table-link">
+                                    @sale.InvoiceNumber
+                                </a>
+                                <div class="executive-cell-muted">
+                                    @sale.SaleDate.ToString("dd MMM yyyy")
+                                </div>
+                            </td>
+                            <td>@(sale.Dealer?.Name ?? "-")</td>
+                            <td>
+                                <strong>
+                                    ₹@sale.GrandTotal.ToString("N2")
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.RecentSales.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                No sales invoices yet.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Inventory Alerts</div>
+                <div class="panel-subtitle">
+                    Items requiring stock attention
+                </div>
+            </div>
+            <span class="executive-tag">
+                @totalAlerts Alerts
+            </span>
+        </div>
+
+        @if (Model.StockAlerts.Any())
+        {
+            <div class="executive-alert-list">
+                @foreach (var item in Model.StockAlerts)
+                {
+                    <div class="executive-alert-item">
+                        <div class="executive-alert-icon">
+                            <i class="bi bi-exclamation-circle"></i>
+                        </div>
+                        <div class="executive-alert-details">
+                            <strong>@item.Name</strong>
+                            <small>@item.Type · @item.Code</small>
+                        </div>
+                        <div class="executive-alert-stock">
+                            <strong>@item.CurrentStock.ToString("0.###")</strong>
+                            <small>
+                                Min @item.MinimumStock.ToString("0.###")
+                            </small>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="executive-empty">
+                <i class="bi bi-check-circle"></i>
+                <strong>Inventory looks healthy</strong>
+                <span>No low-stock items detected.</span>
+            </div>
+        }
+    </section>
+</div>
+
+<div class="executive-main-grid">
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Recent Products</div>
+                <div class="panel-subtitle">
+                    Latest finished inventory additions
+                </div>
+            </div>
+            <a asp-controller="Products" asp-action="Index"
+               class="executive-text-link">View All</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.RecentProducts)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@product.Name</strong>
+                                <div class="executive-cell-muted">
+                                    @product.ProductCode
+                                </div>
+                            </td>
+                            <td>@(product.Category?.Name ?? "-")</td>
+                            <td>@product.CurrentStock</td>
+                        </tr>
+                    }
+
+                    @if (!Model.RecentProducts.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                No products added yet.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel executive-panel">
+        <div class="executive-panel-heading">
+            <div>
+                <div class="panel-title">Recent Purchases</div>
+                <div class="panel-subtitle">
+                    Latest raw material procurement
+                </div>
+            </div>
+            <a asp-controller="Purchases" asp-action="Index"
+               class="executive-text-link">View All</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Purchase</th>
+                        <th>Supplier</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var purchase in Model.RecentPurchases)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@purchase.PurchaseNumber</strong>
+                                <div class="executive-cell-muted">
+                                    @purchase.PurchaseDate.ToString("dd MMM yyyy")
+                                </div>
+                            </td>
+                            <td>@purchase.SupplierName</td>
+                            <td>
+                                <strong>
+                                    ₹@purchase.TotalAmount.ToString("N2")
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.RecentPurchases.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                No purchases recorded yet.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+<script>
+    (() => {
+        const canvas = document.getElementById("executiveSalesChart");
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        const labels = @Html.Raw(monthsJson);
+        const values = @Html.Raw(salesJson);
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Sales Revenue",
+                    data: values,
+                    borderColor: "#F47732",
+                    backgroundColor: "rgba(244,119,50,0.08)",
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#F47732",
+                    pointBorderColor: "#ffffff",
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: context =>
+                                " ₹" + context.parsed.y.toLocaleString("en-IN")
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: "#738093" }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: "#EDF0F4" },
+                        ticks: {
+                            color: "#738093",
+                            callback: value =>
+                                "₹" + Number(value).toLocaleString("en-IN")
+                        }
+                    }
+                }
+            }
+        });
+    })();
+</script>

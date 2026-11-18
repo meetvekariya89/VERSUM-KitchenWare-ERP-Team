@@ -1,0 +1,27 @@
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build output
+bin/
+obj/
+
+# Local configuration and secrets
+appsettings.json
+appsettings.*.json
+.env
+.env.*
+secrets.json
+
+# Database and backup files
+*.db
+*.bak
+*.mdf
+*.ldf
+
+# Temporary files
+*.log
+*.tmp
+Properties/launchSettings.json

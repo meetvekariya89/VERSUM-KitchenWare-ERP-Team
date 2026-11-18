@@ -1,0 +1,171 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@pageTitle - VERSUM ERP</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/versum.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+    <div class="versum-shell">
+
+        <aside class="versum-sidebar">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="brand">
+
+                <div class="brand-icon">V</div>
+
+                <div>
+                    <div class="brand-title">VERSUM</div>
+                    <div class="brand-subtitle">
+                        KITCHENWARE ERP
+                    </div>
+                </div>
+            </a>
+
+            <div class="nav-section">OVERVIEW</div>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="side-link @(controller == "Home" && action == "Index" ? "active" : "")">
+
+                <i class="bi bi-grid side-icon"></i>
+                Dashboard
+            </a>
+
+            <div class="nav-section">INVENTORY</div>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="side-link @(controller == "Products" ? "active" : "")">
+
+                <i class="bi bi-box-seam side-icon"></i>
+                Products
+            </a>
+
+            <a asp-controller="Categories"
+               asp-action="Index"
+               class="side-link @(controller == "Categories" ? "active" : "")">
+
+                <i class="bi bi-collection side-icon"></i>
+                Categories
+            </a>
+
+            <a asp-controller="RawMaterials"
+               asp-action="Index"
+               class="side-link @(controller == "RawMaterials" ? "active" : "")">
+
+                <i class="bi bi-layers side-icon"></i>
+                Raw Materials
+            </a>
+
+            <!-- STOCK MOVEMENTS - NEW MODULE -->
+            <a asp-controller="StockMovements"
+               asp-action="Index"
+               class="side-link @(controller == "StockMovements" ? "active" : "")">
+
+                <i class="bi bi-arrow-left-right side-icon"></i>
+                Stock Movements
+            </a>
+
+            <div class="nav-section">MANUFACTURING</div>
+
+            <a asp-controller="Production"
+               asp-action="Index"
+               class="side-link">
+
+                <i class="bi bi-gear-wide-connected side-icon"></i>
+                Production
+            </a>
+
+            <div class="nav-section">BUSINESS</div>
+
+            <a asp-controller="Dealers"
+               asp-action="Index"
+               class="side-link">
+
+                <i class="bi bi-people side-icon"></i>
+                Dealers
+            </a>
+
+            <a asp-controller="Purchases"
+               asp-action="Index"
+               class="side-link">
+
+                <i class="bi bi-bag side-icon"></i>
+                Purchases
+            </a>
+
+            <a asp-controller="Sales"
+               asp-action="Index"
+               class="side-link">
+
+                <i class="bi bi-receipt side-icon"></i>
+                Sales &amp; Invoices
+            </a>
+
+            <div class="nav-section">ANALYTICS</div>
+
+            <a asp-controller="Reports"
+               asp-action="Index"
+               class="side-link">
+
+                <i class="bi bi-bar-chart side-icon"></i>
+                Reports
+            </a>
+
+        </aside>
+
+        <main class="versum-main">
+
+            <header class="versum-topbar">
+
+                <div class="topbar-title">
+                    @pageTitle
+                </div>
+
+                <div class="topbar-right">
+
+                    <span class="text-muted small d-none d-sm-inline">
+                        VERSUM Workspace
+                    </span>
+
+                    <div class="user-avatar">VE</div>
+
+                </div>
+
+            </header>
+
+            <div class="page-content">
+                @RenderBody()
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
