@@ -1,0 +1,638 @@
+﻿@model VERSUM.KitchenWareERP.Models.Sale
+
+@{
+    Layout = null;
+    var dealer = Model.Dealer;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1" />
+
+    <title>VERSUM | @Model.InvoiceNumber</title>
+
+    <style>
+        :root {
+            --ink: #202832;
+            --accent: #F47732;
+            --muted: #667085;
+            --line: #E5E7EB;
+            --soft: #F4F6F8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #E9EDF1;
+            color: var(--ink);
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .toolbar {
+            max-width: 900px;
+            margin: 25px auto 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toolbar-title {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: 1px solid #D5DAE0;
+            border-radius: 8px;
+            padding: 11px 18px;
+            background: white;
+            color: var(--ink);
+            text-decoration: none;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .invoice {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto 40px;
+            background: white;
+            padding: 18mm 17mm 15mm;
+            box-shadow: 0 12px 45px rgba(32,40,50,.10);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 34px;
+            font-weight: 850;
+            letter-spacing: -1.5px;
+            line-height: 1;
+        }
+
+            .brand span {
+                color: var(--accent);
+            }
+
+        .brand-subtitle {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+        }
+
+        .document-heading {
+            text-align: right;
+        }
+
+        .document-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        .document-number {
+            font-size: 16px;
+            font-weight: 750;
+            margin-top: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .document-date {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .accent-line {
+            height: 5px;
+            margin: 27px 0 30px;
+            background: linear-gradient( to right, var(--ink) 0%, var(--ink) 78%, var(--accent) 78%, var(--accent) 100% );
+        }
+
+        .party-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            margin-bottom: 35px;
+        }
+
+        .section-label {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .party-name {
+            font-size: 15px;
+            font-weight: 750;
+            margin-bottom: 6px;
+        }
+
+        .party-info {
+            color: var(--muted);
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: var(--soft);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 32px;
+            gap: 15px;
+        }
+
+        .summary-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .summary-value {
+            margin-top: 5px;
+            font-weight: 750;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .section-heading {
+            font-size: 15px;
+            font-weight: 750;
+            margin-bottom: 14px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .items-table thead {
+                display: table-header-group;
+            }
+
+            .items-table th {
+                background: var(--ink);
+                color: white;
+                padding: 13px 10px;
+                text-align: left;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: .7px;
+            }
+
+            .items-table td {
+                padding: 15px 10px;
+                border-bottom: 1px solid var(--line);
+                vertical-align: top;
+            }
+
+            .items-table tbody tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+        .product-name {
+            font-weight: 700;
+        }
+
+        .product-code {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .right {
+            text-align: right !important;
+        }
+
+        .totals-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 28px;
+        }
+
+        .totals-card {
+            width: 300px;
+            background: var(--soft);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 8px 0;
+        }
+
+            .total-row .name {
+                color: var(--muted);
+            }
+
+            .total-row .value {
+                font-weight: 700;
+            }
+
+        .grand-total {
+            border-top: 1px solid #D9DEE5;
+            margin-top: 10px;
+            padding-top: 18px;
+            align-items: center;
+        }
+
+            .grand-total .name {
+                color: var(--ink);
+                font-weight: 800;
+                font-size: 11px;
+            }
+
+            .grand-total .value {
+                color: var(--accent);
+                font-size: 22px;
+                font-weight: 850;
+            }
+
+        .notes {
+            margin-top: 42px;
+            padding: 20px;
+            background: #FFF8F3;
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            break-inside: avoid;
+        }
+
+        .notes-title {
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .notes-text {
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .invoice-footer {
+            margin-top: 65px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            color: var(--muted);
+            font-size: 10px;
+            break-inside: avoid;
+        }
+
+        .footer-brand {
+            color: var(--ink);
+            font-weight: 850;
+            letter-spacing: 1.5px;
+        }
+
+            .footer-brand span {
+                color: var(--accent);
+            }
+
+        @@media (max-width: 850px) {
+            .toolbar {
+                padding: 0 15px;
+            }
+
+            .invoice {
+                width: 100%;
+                min-height: auto;
+                padding: 25px;
+            }
+
+            .party-grid {
+                gap: 20px;
+            }
+
+            .items-table {
+                font-size: 11px;
+            }
+        }
+
+        @@media print {
+            @@page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .toolbar {
+                display: none !important;
+            }
+
+            .invoice {
+                width: 100%;
+                min-height: 0;
+                margin: 0;
+                padding: 18mm 17mm 15mm;
+                box-shadow: none;
+            }
+
+            .items-table th {
+                background: #202832 !important;
+                color: white !important;
+            }
+
+            .summary-strip,
+            .totals-card,
+            .notes {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toolbar">
+        <div class="toolbar-title">
+            Invoice Preview
+        </div>
+
+        <div class="toolbar-actions">
+            <a asp-controller="Sales"
+               asp-action="Details"
+               asp-route-id="@Model.Id"
+               class="btn">
+                Back to Details
+            </a>
+
+            <button type="button"
+                    class="btn btn-primary"
+                    onclick="window.print()">
+                Print / Save PDF
+            </button>
+        </div>
+    </div>
+
+    <main class="invoice">
+
+        <header class="header">
+            <div>
+                <div class="brand">
+                    VERS<span>UM.</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    KITCHENWARE ERP
+                </div>
+            </div>
+
+            <div class="document-heading">
+                <div class="document-label">
+                    SALES INVOICE
+                </div>
+
+                <div class="document-number">
+                    @Model.InvoiceNumber
+                </div>
+
+                <div class="document-date">
+                    @Model.SaleDate.ToString("dd MMMM yyyy")
+                </div>
+            </div>
+        </header>
+
+        <div class="accent-line"></div>
+
+        <section class="party-grid">
+            <div>
+                <div class="section-label">
+                    ISSUED BY
+                </div>
+
+                <div class="party-name">
+                    VERSUM KitchenWare ERP
+                </div>
+
+                <div class="party-info">
+                    Sales & Inventory Management<br />
+                    Business invoice generated by VERSUM
+                </div>
+            </div>
+
+            <div>
+                <div class="section-label">
+                    BILL TO
+                </div>
+
+                <div class="party-name">
+                    @(dealer?.Name ?? "Dealer")
+                </div>
+
+                <div class="party-info">
+                    @if (!string.IsNullOrWhiteSpace(dealer?.Address))
+                    {
+                        @dealer.Address
+                        <br />
+                    }
+
+                    @dealer?.City
+                    @if (!string.IsNullOrWhiteSpace(dealer?.State))
+                    {
+                        <text>, @dealer.State</text>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(dealer?.Pincode))
+                    {
+                        <text> - @dealer.Pincode</text>
+                    }
+
+                    <br />
+
+                    @if (!string.IsNullOrWhiteSpace(dealer?.Phone))
+                    {
+                        <text>Phone: @dealer.Phone</text><br />
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(dealer?.GSTNumber))
+                    {
+                        <text>GSTIN: @dealer.GSTNumber</text>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="summary-strip">
+            <div>
+                <div class="summary-label">
+                    Invoice Date
+                </div>
+                <div class="summary-value">
+                    @Model.SaleDate.ToString("dd MMM yyyy")
+                </div>
+            </div>
+
+            <div>
+                <div class="summary-label">
+                    Dealer Code
+                </div>
+                <div class="summary-value">
+                    @(dealer?.DealerCode ?? "-")
+                </div>
+            </div>
+
+            <div>
+                <div class="summary-label">
+                    Total Items
+                </div>
+                <div class="summary-value">
+                    @Model.Items.Sum(x => x.Quantity)
+                    Units
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-heading">
+                Invoice Items
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width:7%">NO.</th>
+                        <th>PRODUCT DETAILS</th>
+                        <th class="right">QTY</th>
+                        <th class="right">UNIT PRICE</th>
+                        <th class="right">AMOUNT</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int rowNumber = 1;
+                    }
+
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@rowNumber</td>
+
+                            <td>
+                                <div class="product-name">
+                                    @item.Product.Name
+                                </div>
+                                <div class="product-code">
+                                    SKU: @item.Product.ProductCode
+                                </div>
+                            </td>
+
+                            <td class="right">
+                                @item.Quantity
+                            </td>
+
+                            <td class="right">
+                                ₹@item.UnitPrice.ToString("N2")
+                            </td>
+
+                            <td class="right">
+                                <strong>
+                                    ₹@item.LineTotal.ToString("N2")
+                                </strong>
+                            </td>
+                        </tr>
+
+                        rowNumber++;
+                    }
+                </tbody>
+            </table>
+        </section>
+
+        <section class="totals-area">
+            <div class="totals-card">
+                <div class="total-row">
+                    <span class="name">Subtotal</span>
+                    <span class="value">
+                        ₹@Model.Subtotal.ToString("N2")
+                    </span>
+                </div>
+
+                <div class="total-row grand-total">
+                    <span class="name">
+                        GRAND TOTAL
+                    </span>
+
+                    <span class="value">
+                        ₹@Model.GrandTotal.ToString("N2")
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="notes">
+            <div class="notes-title">
+                NOTES & REMARKS
+            </div>
+
+            <div class="notes-text">
+                @(string.IsNullOrWhiteSpace(Model.Remarks)
+                    ? "Thank you for your business. We appreciate your trust."
+                    : Model.Remarks)
+            </div>
+        </section>
+
+        <footer class="invoice-footer">
+            <div>
+                This document was generated electronically
+                using VERSUM KitchenWare ERP.
+            </div>
+
+            <div class="footer-brand">
+                VERS<span>UM.</span>
+            </div>
+        </footer>
+
+    </main>
+</body>
+</html>

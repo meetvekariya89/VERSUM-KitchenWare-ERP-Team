@@ -1,0 +1,125 @@
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.Sale>
+
+@{
+    ViewData["Title"] = "Sales Management";
+
+    decimal totalSales = Model.Sum(s => s.GrandTotal);
+    int invoiceCount = Model.Count();
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Sales Management</h1>
+        <p>Manage dealer sales and invoices.</p>
+    </div>
+
+    <a asp-action="Create" class="versum-btn">
+        <i class="bi bi-plus-circle"></i>
+        New Sales Invoice
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="panel">
+            <p class="text-muted mb-1">Total Invoices</p>
+            <h2>@invoiceCount</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel">
+            <p class="text-muted mb-1">Total Sales Value</p>
+            <h2>₹@totalSales.ToString("N2")</h2>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+    <form asp-action="Index" method="get"
+          class="d-flex gap-2 mb-3">
+
+        <input type="search"
+               name="search"
+               value="@ViewBag.Search"
+               class="versum-input"
+               placeholder="Search invoice or dealer..." />
+
+        <button type="submit" class="versum-btn">
+            Search
+        </button>
+
+        <a asp-action="Index"
+           class="versum-btn versum-btn-outline">
+            Clear
+        </a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Invoice Number</th>
+                    <th>Date</th>
+                    <th>Dealer</th>
+                    <th>Items</th>
+                    <th>Quantity</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sale in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@sale.InvoiceNumber</strong>
+                        </td>
+
+                        <td>
+                            @sale.SaleDate.ToString("dd MMM yyyy")
+                        </td>
+
+                        <td>
+                            @(sale.Dealer?.Name ?? "-")
+                        </td>
+
+                        <td>@sale.Items.Count</td>
+
+                        <td>
+                            @sale.Items.Sum(i => i.Quantity)
+                        </td>
+
+                        <td>
+                            <strong>
+                                ₹@sale.GrandTotal.ToString("N2")
+                            </strong>
+                        </td>
+
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@sale.Id">
+                                View
+                            </a>
+                            |
+                            <a asp-action="Print"
+                               asp-route-id="@sale.Id">
+                                Print
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7"
+                            class="text-center py-4 text-muted">
+                            No sales invoices found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+﻿@model VERSUM.KitchenWareERP.Models.Sale
+
+@{
+    ViewData["Title"] = "Sales Invoice Details";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Sales Invoice Details</h1>
+        <p>@Model.InvoiceNumber</p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-action="Print"
+           asp-route-id="@Model.Id"
+           class="versum-btn">
+            <i class="bi bi-printer"></i> Print Invoice
+        </a>
+
+        <a asp-action="Index"
+           class="versum-btn versum-btn-outline">
+            Back
+        </a>
+    </div>
+</div>
+
+<div class="panel mb-3">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Invoice Number</p>
+            <strong>@Model.InvoiceNumber</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Invoice Date</p>
+            <strong>
+                @Model.SaleDate.ToString("dd MMM yyyy")
+            </strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Dealer Name</p>
+            <strong>@Model.Dealer?.Name</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Dealer Phone</p>
+            <strong>@Model.Dealer?.Phone</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Dealer City</p>
+            <strong>@Model.Dealer?.City</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Dealer GSTIN</p>
+            <strong>@(Model.Dealer?.GSTNumber ?? "-")</strong>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+    <h5 class="mb-3">Invoice Items</h5>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Product Code</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Product.Name</td>
+                        <td>@item.Product.ProductCode</td>
+                        <td>@item.Quantity</td>
+                        <td>₹@item.UnitPrice.ToString("N2")</td>
+                        <td>
+                            <strong>
+                                ₹@item.LineTotal.ToString("N2")
+                            </strong>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="col-md-5">
+            <table class="table">
+                <tr>
+                    <td>Subtotal</td>
+                    <td class="text-end">
+                        ₹@Model.Subtotal.ToString("N2")
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Grand Total</th>
+                    <th class="text-end">
+                        ₹@Model.GrandTotal.ToString("N2")
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <hr />
+
+    <p>
+        <strong>Remarks:</strong>
+        @(Model.Remarks ?? "No remarks.")
+    </p>
+
+    <span class="versum-status versum-status-active">
+        Stock Updated
+    </span>
+</div>

@@ -1,0 +1,333 @@
+﻿@model VERSUM.KitchenWareERP.Controllers.SaleInput
+@using System.Globalization
+@using System.Text.Json
+@using VERSUM.KitchenWareERP.Models
+
+@{
+    ViewData["Title"] = "New Sales Invoice";
+
+    var products = (IEnumerable<Product>)ViewBag.Products;
+
+    var productData = products.Select(p => new
+    {
+        id = p.Id,
+        name = p.Name,
+        price = p.SellingPrice,
+        stock = p.CurrentStock
+    });
+
+    var productJson = JsonSerializer.Serialize(productData);
+}
+
+<div class="page-heading">
+    <div>
+        <h1>New Sales Invoice</h1>
+        <p>Create a dealer invoice and update finished product stock.</p>
+    </div>
+
+    <a asp-action="Index"
+       class="versum-btn versum-btn-outline">
+        Back
+    </a>
+</div>
+
+<div class="panel versum-form">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             class="text-danger mb-3"></div>
+
+        <h5 class="mb-3">Invoice Information</h5>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="DealerId">Select Dealer</label>
+                    <select asp-for="DealerId"
+                            asp-items="ViewBag.Dealers"
+                            class="versum-input">
+                        <option value="">-- Select Dealer --</option>
+                    </select>
+                    <span asp-validation-for="DealerId"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label asp-for="SaleDate">Invoice Date</label>
+                    <input asp-for="SaleDate"
+                           type="date"
+                           class="versum-input" />
+                    <span asp-validation-for="SaleDate"
+                          class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Products</h5>
+
+            <button type="button"
+                    class="versum-btn"
+                    id="addProduct">
+                + Add Product
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Available Stock</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Line Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody id="saleItems">
+                    @for (int i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <select name="Items[@i].ProductId"
+                                        class="versum-input product-select">
+                                    <option value="">Select Product</option>
+                                    @foreach (var product in products)
+                                    {
+                                        if (Model.Items[i].ProductId == product.Id)
+                                        {
+                                            <option value="@product.Id" selected>
+                                                @product.Name
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@product.Id">
+                                                @product.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+
+                            <td class="stock-cell">-</td>
+
+                            <td>
+                                <input name="Items[@i].Quantity"
+                                       type="number"
+                                       min="1"
+                                       step="1"
+                                       value="@Model.Items[i].Quantity"
+                                       class="versum-input quantity-input" />
+                            </td>
+
+                            <td class="price-cell">₹0.00</td>
+
+                            <td class="total-cell">₹0.00</td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger remove-product">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row justify-content-end mt-4">
+            <div class="col-md-5">
+                <div class="panel"
+                     style="background:#F4F6F8;">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <strong id="subtotal">₹0.00</strong>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between">
+                        <strong>Grand Total</strong>
+                        <h4 id="grandTotal">₹0.00</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Remarks">Remarks</label>
+            <textarea asp-for="Remarks"
+                      rows="3"
+                      class="versum-input"
+                      placeholder="Optional invoice notes"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Save Invoice & Update Stock
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const products = @Html.Raw(productJson);
+
+        const tbody = document.getElementById("saleItems");
+
+        const money = value =>
+            "₹" + value.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+        function reindex() {
+            [...tbody.rows].forEach((row, index) => {
+                row.querySelectorAll("[name]").forEach(input => {
+                    input.name = input.name.replace(
+                        /Items\[\d+\]/,
+                        `Items[${index}]`
+                    );
+                });
+            });
+        }
+
+        function calculate() {
+            let subtotal = 0;
+
+            [...tbody.rows].forEach(row => {
+                const productId = Number(
+                    row.querySelector(".product-select").value
+                );
+
+                const quantity = Number(
+                    row.querySelector(".quantity-input").value
+                ) || 0;
+
+                const product = products.find(p =>
+                    p.id === productId
+                );
+
+                if (product) {
+                    const lineTotal = quantity * product.price;
+
+                    row.querySelector(".stock-cell").textContent =
+                        product.stock;
+
+                    row.querySelector(".price-cell").textContent =
+                        money(product.price);
+
+                    row.querySelector(".total-cell").textContent =
+                        money(lineTotal);
+
+                    subtotal += lineTotal;
+
+                    row.querySelector(".quantity-input")
+                        .max = product.stock;
+
+                    row.querySelector(".stock-cell")
+                        .classList.toggle(
+                            "text-danger",
+                            quantity > product.stock
+                        );
+                } else {
+                    row.querySelector(".stock-cell").textContent = "-";
+                    row.querySelector(".price-cell").textContent = money(0);
+                    row.querySelector(".total-cell").textContent = money(0);
+                }
+            });
+
+            document.getElementById("subtotal").textContent =
+                money(subtotal);
+
+            document.getElementById("grandTotal").textContent =
+                money(subtotal);
+        }
+
+        document.getElementById("addProduct")
+            .addEventListener("click", function() {
+
+                if (tbody.rows.length >= 30) {
+                    alert("Maximum 30 products per invoice.");
+                    return;
+                }
+
+                const row = document.createElement("tr");
+
+                let options = '<option value="">Select Product</option>';
+
+                products.forEach(p => {
+                    options += `<option value="${p.id}">
+                                ${p.name.replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")}
+                            </option>`;
+                });
+
+                row.innerHTML = `
+                            <td>
+                                <select class="versum-input product-select">
+                                    ${options}
+                                </select>
+                            </td>
+                            <td class="stock-cell">-</td>
+                            <td>
+                                <input type="number"
+                                       min="1" step="1" value="1"
+                                       class="versum-input quantity-input" />
+                            </td>
+                            <td class="price-cell">₹0.00</td>
+                            <td class="total-cell">₹0.00</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger remove-product">
+                                    Remove
+                                </button>
+                            </td>`;
+
+                tbody.appendChild(row);
+
+                reindex();
+                calculate();
+            });
+
+        tbody.addEventListener("click", function(event) {
+            if (event.target.classList.contains("remove-product")) {
+                if (tbody.rows.length === 1) {
+                    alert("At least one product is required.");
+                    return;
+                }
+
+                event.target.closest("tr").remove();
+
+                reindex();
+                calculate();
+            }
+        });
+
+        tbody.addEventListener("input", calculate);
+        tbody.addEventListener("change", calculate);
+
+        reindex();
+        calculate();
+    </script>
+}
