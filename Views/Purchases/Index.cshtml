@@ -1,0 +1,126 @@
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.Purchase>
+
+@{
+    ViewData["Title"] = "Purchases Management";
+
+    decimal totalPurchaseValue = Model.Sum(p => p.TotalAmount);
+    int totalPurchases = Model.Count();
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Purchases Management</h1>
+        <p>Manage raw material purchases and inventory.</p>
+    </div>
+
+    <a asp-controller="Purchases"
+       asp-action="Create"
+       class="versum-btn">
+        <i class="bi bi-plus-circle"></i>
+        New Purchase
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="panel">
+            <p class="text-muted mb-1">Purchases Found</p>
+            <h2>@totalPurchases</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel">
+            <p class="text-muted mb-1">Total Purchase Value</p>
+            <h2>₹@totalPurchaseValue.ToString("N2")</h2>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+    <form asp-action="Index" method="get"
+          class="d-flex gap-2 mb-3">
+
+        <input type="search"
+               name="search"
+               value="@ViewBag.Search"
+               class="versum-input"
+               placeholder="Search purchase, supplier or material..." />
+
+        <button type="submit" class="versum-btn">
+            Search
+        </button>
+
+        <a asp-action="Index"
+           class="versum-btn versum-btn-outline">
+            Clear
+        </a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Purchase No.</th>
+                    <th>Date</th>
+                    <th>Supplier</th>
+                    <th>Raw Material</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var purchase in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@purchase.PurchaseNumber</strong>
+                        </td>
+
+                        <td>
+                            @purchase.PurchaseDate.ToString("dd MMM yyyy")
+                        </td>
+
+                        <td>@purchase.SupplierName</td>
+
+                        <td>
+                            @(purchase.RawMaterial?.Name ?? "-")
+                        </td>
+
+                        <td>
+                            @purchase.Quantity.ToString("N3")
+                            @(purchase.RawMaterial?.Unit ?? "")
+                        </td>
+
+                        <td>₹@purchase.UnitPrice.ToString("N2")</td>
+
+                        <td>
+                            <strong>
+                                ₹@purchase.TotalAmount.ToString("N2")
+                            </strong>
+                        </td>
+
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@purchase.Id">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8"
+                            class="text-center py-4 text-muted">
+                            No purchases found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+﻿@model VERSUM.KitchenWareERP.Models.Purchase
+
+@{
+    ViewData["Title"] = "Purchase Details";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Purchase Details</h1>
+        <p>@Model.PurchaseNumber</p>
+    </div>
+
+    <a asp-action="Index"
+       class="versum-btn versum-btn-outline">
+        Back to Purchases
+    </a>
+</div>
+
+<div class="panel versum-form">
+    <h4 class="mb-4">Purchase Summary</h4>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Purchase Number</p>
+            <strong>@Model.PurchaseNumber</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Purchase Date</p>
+            <strong>
+                @Model.PurchaseDate.ToString("dd MMM yyyy")
+            </strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Supplier</p>
+            <strong>@Model.SupplierName</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Invoice Number</p>
+            <strong>@(Model.InvoiceNumber ?? "-")</strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Raw Material</p>
+            <strong>
+                @(Model.RawMaterial?.Name ?? "-")
+            </strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Quantity Purchased</p>
+            <strong>
+                @Model.Quantity.ToString("N3")
+                @(Model.RawMaterial?.Unit ?? "")
+            </strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Unit Price</p>
+            <strong>
+                ₹@Model.UnitPrice.ToString("N2")
+            </strong>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-muted mb-1">Total Amount</p>
+            <h3>
+                ₹@Model.TotalAmount.ToString("N2")
+            </h3>
+        </div>
+    </div>
+
+    <hr />
+
+    <h5>Remarks</h5>
+    <p>@(Model.Remarks ?? "No remarks provided.")</p>
+
+    <div class="mt-4">
+        <span class="versum-status versum-status-active">
+            Stock Updated
+        </span>
+    </div>
+</div>
