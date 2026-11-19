@@ -1,0 +1,35 @@
+﻿@model VERSUM.KitchenWareERP.Models.RawMaterial
+
+@{
+    ViewData["Title"] = "Add Raw Material";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Add Raw Material</h1>
+        <p>Register a manufacturing material.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <partial name="_MaterialForm" model="Model" />
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                Save Material
+            </button>
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+  

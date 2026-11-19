@@ -1,0 +1,41 @@
+﻿@model VERSUM.KitchenWareERP.Models.RawMaterial
+
+@{
+    ViewData["Title"] = "Delete Raw Material";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Delete Raw Material</h1>
+        <p>Confirm removal of this material.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <h4>@Model.Name</h4>
+    <p>Material Code: @Model.MaterialCode</p>
+    <p>
+        Current Stock:
+        @Model.CurrentStock.ToString("N3") @Model.Unit
+    </p>
+
+    <p class="text-danger">
+        This action permanently deletes the material.
+    </p>
+
+    <form asp-action="Delete"
+          asp-route-id="@Model.Id"
+          method="post">
+        @Html.AntiForgeryToken()
+
+        <button type="submit" class="versum-btn">
+            Confirm Delete
+        </button>
+
+        <a asp-action="Index"
+           class="versum-btn versum-btn-outline">
+            Cancel
+        </a>
+    </form>
+</div>
+  

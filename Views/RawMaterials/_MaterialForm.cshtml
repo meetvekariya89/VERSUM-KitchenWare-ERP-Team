@@ -1,0 +1,83 @@
+﻿@model VERSUM.KitchenWareERP.Models.RawMaterial
+
+<div asp-validation-summary="ModelOnly"
+     class="validation-error"></div>
+
+<div class="form-field">
+    <label asp-for="MaterialCode">Material Code</label>
+    <input asp-for="MaterialCode"
+           class="versum-input"
+           placeholder="e.g. RM-001" />
+    <span asp-validation-for="MaterialCode"
+          class="validation-error"></span>
+</div>
+
+<div class="form-field">
+    <label asp-for="Name">Material Name</label>
+    <input asp-for="Name"
+           class="versum-input"
+           placeholder="e.g. Stainless Steel Coil" />
+    <span asp-validation-for="Name"
+          class="validation-error"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="Unit">Unit</label>
+            <select asp-for="Unit" class="versum-input">
+                <option value="Kg">Kg</option>
+                <option value="Gram">Gram</option>
+                <option value="Piece">Piece</option>
+                <option value="Meter">Meter</option>
+                <option value="Sheet">Sheet</option>
+                <option value="Roll">Roll</option>
+            </select>
+            <span asp-validation-for="Unit"
+                  class="validation-error"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="CostPerUnit">Cost per Unit (₹)</label>
+            <input asp-for="CostPerUnit"
+                   type="number" min="0" step="0.01"
+                   class="versum-input" />
+            <span asp-validation-for="CostPerUnit"
+                  class="validation-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="CurrentStock">Current Stock</label>
+            <input asp-for="CurrentStock"
+                   type="number" min="0" step="0.001"
+                   class="versum-input" />
+            <span asp-validation-for="CurrentStock"
+                  class="validation-error"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-field">
+            <label asp-for="MinimumStock">Minimum Stock</label>
+            <input asp-for="MinimumStock"
+                   type="number" min="0" step="0.001"
+                   class="versum-input" />
+            <span asp-validation-for="MinimumStock"
+                  class="validation-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="form-field">
+    <label>
+        <input asp-for="IsActive" />
+        Active Material
+    </label>
+</div>
+  
