@@ -1,0 +1,493 @@
+﻿@model VERSUM.KitchenWareERP.Controllers.ReportsViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Reports & Analytics";
+
+    decimal totalInventory =
+        Model.FinishedStockValue + Model.RawMaterialStockValue;
+
+    int lowStockCount =
+        Model.LowStockProducts.Count +
+        Model.LowStockMaterials.Count;
+
+    var chartLabels = JsonSerializer.Serialize(
+        Model.MonthlySales.Select(x => x.Month.ToString("MMM yyyy")));
+
+    var chartValues = JsonSerializer.Serialize(
+        Model.MonthlySales.Select(x => x.Amount));
+}
+
+<style>
+    .report-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 22px;
+        height: 100%;
+    }
+
+    .report-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .report-value {
+        font-size: 27px;
+        font-weight: 750;
+        color: #202832;
+        margin-top: 9px;
+        overflow-wrap: anywhere;
+    }
+
+    .report-note {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 7px;
+    }
+
+    .report-section {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 22px;
+    }
+
+        .report-section h5 {
+            color: #202832;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+    .report-chart {
+        position: relative;
+        height: 310px;
+    }
+
+    .report-table th {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .report-table td {
+        vertical-align: middle;
+    }
+
+    .report-alert {
+        color: #c2410c;
+        font-weight: 700;
+    }
+
+    @@media print {
+        .report-filters,
+        .report-print {
+            display: none !important;
+        }
+
+        .report-card,
+        .report-section {
+            break-inside: avoid;
+            box-shadow: none;
+        }
+    }
+</style>
+
+<div class="page-heading">
+    <div>
+        <h1>Reports & Analytics</h1>
+        <p>Business performance, inventory and sales insights.</p>
+    </div>
+
+    <button type="button"
+            onclick="window.print()"
+            class="versum-btn report-print">
+        <i class="bi bi-printer"></i>
+        Print Report
+    </button>
+</div>
+
+<div class="report-section report-filters">
+    <form asp-action="Index" method="get">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">From Date</label>
+                <input type="date"
+                       name="fromDate"
+                       value="@Model.FromDate.ToString("yyyy-MM-dd")"
+                       class="versum-input" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">To Date</label>
+                <input type="date"
+                       name="toDate"
+                       value="@Model.ToDate.ToString("yyyy-MM-dd")"
+                       class="versum-input" />
+            </div>
+
+            <div class="col-md-4">
+                <button class="versum-btn" type="submit">
+                    Apply Filter
+                </button>
+                <a asp-action="Index"
+                   class="versum-btn versum-btn-outline">
+                    Reset
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Total Sales Revenue</div>
+            <div class="report-value">
+                ₹@Model.TotalSales.ToString("N2")
+            </div>
+            <div class="report-note">
+                @Model.TotalInvoices sales invoices
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Total Purchases</div>
+            <div class="report-value">
+                ₹@Model.TotalPurchases.ToString("N2")
+            </div>
+            <div class="report-note">
+                @Model.TotalPurchaseOrders purchase records
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Inventory Valuation</div>
+            <div class="report-value">
+                ₹@totalInventory.ToString("N2")
+            </div>
+            <div class="report-note">
+                Finished goods + raw materials
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Low Stock Alerts</div>
+            <div class="report-value report-alert">
+                @lowStockCount
+            </div>
+            <div class="report-note">
+                Items at or below minimum stock
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Total Products</div>
+            <div class="report-value">@Model.TotalProducts</div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Registered Dealers</div>
+            <div class="report-value">@Model.TotalDealers</div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Production Batches</div>
+            <div class="report-value">
+                @Model.TotalProductionBatches
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="report-card">
+            <div class="report-label">Units Produced</div>
+            <div class="report-value">
+                @Model.TotalUnitsProduced
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="report-section">
+    <h5>Monthly Sales Performance</h5>
+
+    @if (Model.MonthlySales.Any())
+    {
+        <div class="report-chart">
+            <canvas id="salesChart"></canvas>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">
+            No sales data available for the selected period.
+        </p>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="report-section">
+            <h5>Top Selling Products</h5>
+
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Units</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TopProducts)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.QuantitySold</td>
+                                <td>₹@item.Revenue.ToString("N2")</td>
+                            </tr>
+                        }
+
+                        @if (!Model.TopProducts.Any())
+                        {
+                            <tr>
+                                <td colspan="3">No sales recorded.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="report-section">
+            <h5>Top Dealers by Sales</h5>
+
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Dealer</th>
+                            <th>Invoices</th>
+                            <th>Sales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DealerSales)
+                        {
+                            <tr>
+                                <td>@item.DealerName</td>
+                                <td>@item.InvoiceCount</td>
+                                <td>₹@item.TotalAmount.ToString("N2")</td>
+                            </tr>
+                        }
+
+                        @if (!Model.DealerSales.Any())
+                        {
+                            <tr>
+                                <td colspan="3">No dealer sales found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="report-section">
+            <h5>Low Stock — Finished Products</h5>
+
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Stock</th>
+                            <th>Minimum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LowStockProducts)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td class="report-alert">
+                                    @item.CurrentStock
+                                </td>
+                                <td>@item.MinimumStock</td>
+                            </tr>
+                        }
+
+                        @if (!Model.LowStockProducts.Any())
+                        {
+                            <tr>
+                                <td colspan="3">
+                                    No low-stock products.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="report-section">
+            <h5>Low Stock — Raw Materials</h5>
+
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Stock</th>
+                            <th>Minimum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LowStockMaterials)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td class="report-alert">
+                                    @item.CurrentStock.ToString("N3")
+                                    @item.Unit
+                                </td>
+                                <td>
+                                    @item.MinimumStock.ToString("N3")
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.LowStockMaterials.Any())
+                        {
+                            <tr>
+                                <td colspan="3">
+                                    No low-stock raw materials.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="report-section">
+    <h5>Recent Sales</h5>
+
+    <div class="table-responsive">
+        <table class="table report-table">
+            <thead>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Date</th>
+                    <th>Dealer</th>
+                    <th>Amount</th>
+                    <th class="report-print">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sale in Model.RecentSales)
+                {
+                    <tr>
+                        <td>@sale.InvoiceNumber</td>
+                        <td>@sale.SaleDate.ToString("dd MMM yyyy")</td>
+                        <td>@sale.Dealer?.Name</td>
+                        <td>₹@sale.GrandTotal.ToString("N2")</td>
+                        <td class="report-print">
+                            <a asp-controller="Sales"
+                               asp-action="Details"
+                               asp-route-id="@sale.Id">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.RecentSales.Any())
+                {
+                    <tr>
+                        <td colspan="5">
+                            No recent sales in this period.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+<script>
+    (function() {
+        const canvas = document.getElementById("salesChart");
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        const labels = @Html.Raw(chartLabels);
+        const values = @Html.Raw(chartValues);
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Sales Revenue (₹)",
+                    data: values,
+                    borderColor: "#F47732",
+                    backgroundColor: "rgba(244,119,50,0.10)",
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 5,
+                    pointBackgroundColor: "#F47732"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return "₹" + value.toLocaleString("en-IN");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })();
+</script>
