@@ -1,0 +1,99 @@
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.ProductionBatch>
+
+@{
+    ViewData["Title"] = "Production Management";
+
+    var productNames =
+        (Dictionary<int, string>)ViewBag.ProductNames;
+
+    var materialNames =
+        (Dictionary<int, string>)ViewBag.MaterialNames;
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Production Management</h1>
+        <p>Manage kitchenware manufacturing batches.</p>
+    </div>
+
+    <a asp-controller="Production"
+       asp-action="Create"
+       class="versum-btn">
+        <i class="bi bi-plus-circle"></i>
+        New Production Batch
+    </a>
+</div>
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Batch Number</th>
+                    <th>Production Date</th>
+                    <th>Finished Product</th>
+                    <th>Quantity Produced</th>
+                    <th>Raw Material</th>
+                    <th>Material Consumed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var batch in Model)
+                {
+                    var formattedDate = batch.ProductionDate
+                        .ToLocalTime()
+                        .ToString("dd MMM yyyy, hh:mm tt");
+
+                    var productName = productNames.GetValueOrDefault(
+                        batch.ProductId, "Deleted product");
+
+                    var materialName = materialNames.GetValueOrDefault(
+                        batch.RawMaterialId, "Deleted material");
+
+                    <tr>
+                        <td>
+                            <strong>@batch.BatchNumber</strong>
+                        </td>
+
+                        <td>
+                            @formattedDate
+                        </td>
+
+                        <td>
+                            @productName
+                        </td>
+
+                        <td>
+                            @batch.QuantityProduced
+                        </td>
+
+                        <td>
+                            @materialName
+                        </td>
+
+                        <td>
+                            @batch.MaterialConsumed.ToString("N3")
+                        </td>
+
+                        <td>
+                            <span class="versum-status versum-status-active">
+                                Completed
+                            </span>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            No production batches recorded yet.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

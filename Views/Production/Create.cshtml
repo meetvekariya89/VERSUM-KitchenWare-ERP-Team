@@ -1,0 +1,121 @@
+﻿@model VERSUM.KitchenWareERP.Models.ProductionBatch
+
+@{
+    ViewData["Title"] = "New Production Batch";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>New Production Batch</h1>
+        <p>Record manufacturing and update inventory automatically.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <form asp-controller="Production"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-error"></div>
+
+        <div class="form-field">
+            <label asp-for="BatchNumber">
+                Batch Number
+            </label>
+            <input asp-for="BatchNumber"
+                   class="versum-input" />
+            <span asp-validation-for="BatchNumber"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="ProductId">
+                Finished Product
+            </label>
+            <select asp-for="ProductId"
+                    asp-items="ViewBag.Products"
+                    class="versum-input">
+                <option value="0">
+                    -- Select Finished Product --
+                </option>
+            </select>
+            <span asp-validation-for="ProductId"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="QuantityProduced">
+                Quantity Produced (Pieces)
+            </label>
+            <input asp-for="QuantityProduced"
+                   type="number"
+                   min="1"
+                   step="1"
+                   class="versum-input" />
+            <span asp-validation-for="QuantityProduced"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="RawMaterialId">
+                Raw Material Used
+            </label>
+            <select asp-for="RawMaterialId"
+                    asp-items="ViewBag.Materials"
+                    class="versum-input">
+                <option value="0">
+                    -- Select Raw Material --
+                </option>
+            </select>
+            <span asp-validation-for="RawMaterialId"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="MaterialConsumed">
+                Material Consumed
+            </label>
+            <input asp-for="MaterialConsumed"
+                   type="number"
+                   min="0.001"
+                   step="0.001"
+                   class="versum-input" />
+            <span asp-validation-for="MaterialConsumed"
+                  class="validation-error"></span>
+            <small class="form-hint">
+                Enter the quantity using the selected raw material's unit.
+            </small>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Remarks">
+                Production Remarks
+            </label>
+            <textarea asp-for="Remarks"
+                      rows="3"
+                      class="versum-input"
+                      placeholder="e.g. Peeler blade manufacturing batch"></textarea>
+            <span asp-validation-for="Remarks"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                <i class="bi bi-check-circle"></i>
+                Complete Production
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
