@@ -1,0 +1,101 @@
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.StockMovement>
+
+@{
+    ViewData["Title"] = "Stock Movements";
+
+    var productNames =
+        (Dictionary<int, string>)ViewBag.ProductNames;
+
+    var materialNames =
+        (Dictionary<int, string>)ViewBag.MaterialNames;
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Stock Movements</h1>
+        <p>Track all inventory additions and deductions.</p>
+    </div>
+
+    <a asp-action="Create" class="versum-btn">
+        <i class="bi bi-plus-circle"></i>
+        New Stock Transaction
+    </a>
+</div>
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Item</th>
+                    <th>Type</th>
+                    <th>Movement</th>
+                    <th>Quantity</th>
+                    <th>Previous</th>
+                    <th>New Stock</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    string itemName = "Deleted item";
+
+                    if (m.ItemType == "Product")
+                    {
+                        itemName = productNames.GetValueOrDefault(
+                            m.ItemId, "Deleted product");
+                    }
+                    else if (m.ItemType == "RawMaterial")
+                    {
+                        itemName = materialNames.GetValueOrDefault(
+                            m.ItemId, "Deleted material");
+                    }
+
+                    <tr>
+                        <td>
+                            @m.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")
+                        </td>
+                        <td><strong>@itemName</strong></td>
+                        <td>
+                            @(m.ItemType == "RawMaterial"
+                                ? "Raw Material"
+                                : "Product")
+                        </td>
+                        <td>
+                            @if (m.MovementType == "IN")
+                            {
+                                <span class="versum-status versum-status-active">
+                                    STOCK IN
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="versum-status versum-status-low">
+                                    STOCK OUT
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @(m.MovementType == "IN" ? "+" : "-")@m.Quantity.ToString("N3")
+                        </td>
+                        <td>@m.PreviousStock.ToString("N3")</td>
+                        <td><strong>@m.NewStock.ToString("N3")</strong></td>
+                        <td>@(m.Remarks ?? "-")</td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            No stock transactions recorded yet.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

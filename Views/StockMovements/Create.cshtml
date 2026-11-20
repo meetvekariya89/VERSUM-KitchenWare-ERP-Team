@@ -1,0 +1,134 @@
+﻿@model VERSUM.KitchenWareERP.Models.StockMovement
+
+@{
+    ViewData["Title"] = "New Stock Transaction";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>New Stock Transaction</h1>
+        <p>Add or remove inventory with a recorded transaction.</p>
+    </div>
+</div>
+
+<div class="panel versum-form">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-error"></div>
+
+        <div class="form-field">
+            <label asp-for="ItemType">Inventory Type</label>
+            <select asp-for="ItemType"
+                    class="versum-input"
+                    id="itemType">
+                <option value="RawMaterial">Raw Material</option>
+                <option value="Product">Finished Product</option>
+            </select>
+            <span asp-validation-for="ItemType"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field" id="rawMaterialField">
+            <label>Select Raw Material</label>
+            <select class="versum-input"
+                    id="rawMaterialSelect"
+                    asp-items="ViewBag.RawMaterials">
+                <option value="">-- Select Raw Material --</option>
+            </select>
+        </div>
+
+        <div class="form-field" id="productField"
+             style="display:none;">
+            <label>Select Finished Product</label>
+            <select class="versum-input"
+                    id="productSelect"
+                    asp-items="ViewBag.Products">
+                <option value="">-- Select Product --</option>
+            </select>
+        </div>
+
+        <input type="hidden" asp-for="ItemId" id="itemId" />
+
+        <div class="form-field">
+            <label asp-for="MovementType">Transaction Type</label>
+            <select asp-for="MovementType" class="versum-input">
+                <option value="IN">Stock In (+)</option>
+                <option value="OUT">Stock Out (-)</option>
+            </select>
+            <span asp-validation-for="MovementType"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Quantity">Quantity</label>
+            <input asp-for="Quantity"
+                   type="number"
+                   min="0.001"
+                   step="0.001"
+                   class="versum-input"
+                   placeholder="Enter quantity" />
+            <span asp-validation-for="Quantity"
+                  class="validation-error"></span>
+            <small class="form-hint">
+                Finished products require whole numbers.
+                Raw materials support up to three decimal places.
+            </small>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Remarks">Remarks</label>
+            <textarea asp-for="Remarks"
+                      rows="3"
+                      class="versum-input"
+                      placeholder="e.g. Material received from supplier"></textarea>
+            <span asp-validation-for="Remarks"
+                  class="validation-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="versum-btn">
+                <i class="bi bi-check-circle"></i>
+                Save Transaction
+            </button>
+
+            <a asp-action="Index"
+               class="versum-btn versum-btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const type = document.getElementById("itemType");
+            const rawField = document.getElementById("rawMaterialField");
+            const productField = document.getElementById("productField");
+            const rawSelect = document.getElementById("rawMaterialSelect");
+            const productSelect = document.getElementById("productSelect");
+            const itemId = document.getElementById("itemId");
+
+            function updateItem() {
+                const isProduct = type.value === "Product";
+
+                rawField.style.display = isProduct ? "none" : "block";
+                productField.style.display = isProduct ? "block" : "none";
+
+                itemId.value = isProduct
+                    ? productSelect.value
+                    : rawSelect.value;
+            }
+
+            type.addEventListener("change", updateItem);
+            rawSelect.addEventListener("change", updateItem);
+            productSelect.addEventListener("change", updateItem);
+
+            updateItem();
+        })();
+    </script>
+}
