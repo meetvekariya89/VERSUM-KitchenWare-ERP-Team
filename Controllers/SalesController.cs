@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         };
     }
 
+    [Authorize(Roles = "Admin,Staff")]
     public class SalesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -63,6 +65,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             ViewBag.Products = products;
         }
 
+        // SALES HISTORY AND SEARCH
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Index(string? search)
         {
@@ -92,6 +96,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             return View(sales);
         }
 
+        // NEW SALES INVOICE PAGE
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -122,6 +128,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             return View(new SaleInput());
         }
 
+        // SAVE SALES INVOICE AND DEDUCT STOCK
+        // ACCESS: ADMIN AND STAFF
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SaleInput input)
@@ -289,6 +297,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             }
         }
 
+        // SALES INVOICE DETAILS
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -305,6 +315,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             return View(sale);
         }
 
+        // PRINT SALES INVOICE
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Print(int id)
         {

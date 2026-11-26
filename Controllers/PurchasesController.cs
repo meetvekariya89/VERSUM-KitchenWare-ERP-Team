@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class PurchasesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -28,6 +30,8 @@ namespace VERSUM.KitchenWareERP.Controllers
                 materials, "Id", "Name");
         }
 
+        // PURCHASE HISTORY AND SEARCH
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Index(string? search)
         {
@@ -59,6 +63,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             return View(purchases);
         }
 
+        // NEW PURCHASE PAGE
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -84,6 +90,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             });
         }
 
+        // SAVE PURCHASE AND UPDATE STOCK
+        // ACCESS: ADMIN AND STAFF
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -206,6 +214,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             }
         }
 
+        // PURCHASE DETAILS
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

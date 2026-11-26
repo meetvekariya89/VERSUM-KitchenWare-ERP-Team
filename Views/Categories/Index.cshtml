@@ -1,8 +1,10 @@
-﻿
-@model IEnumerable<VERSUM.KitchenWareERP.Models.Category>
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.Category>
 
 @{
     ViewData["Title"] = "Categories";
+
+    // Check administrator permissions
+    var isAdmin = User.IsInRole("Admin");
 }
 
 <div class="page-heading">
@@ -12,18 +14,26 @@
 
 @if (TempData["Success"] != null)
 {
-    <div class="versum-alert">@TempData["Success"]</div>
+    <div class="versum-alert">
+        @TempData["Success"]
+    </div>
 }
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
 }
 
 <div class="panel">
 
     <div class="inventory-toolbar">
-        <form asp-action="Index" method="get"
+
+        <!-- SEARCH CATEGORIES: ADMIN AND STAFF -->
+
+        <form asp-action="Index"
+              method="get"
               class="inventory-search">
 
             <input type="search"
@@ -32,75 +42,148 @@
                    placeholder="Search categories..." />
 
             <button type="submit" class="versum-btn">
-                <i class="bi bi-search"></i> Search
+                <i class="bi bi-search"></i>
+                Search
             </button>
 
             <a asp-action="Index"
                class="versum-btn versum-btn-outline">
                 Reset
             </a>
+
         </form>
 
-        <a asp-action="Create" class="versum-btn">
-            <i class="bi bi-plus-lg"></i>
-            Add Category
-        </a>
+        <!-- ADD CATEGORY: ADMIN ONLY -->
+        @if (isAdmin)
+        {
+            <a asp-action="Create"
+               class="versum-btn">
+
+                <i class="bi bi-plus-lg"></i>
+                Add Category
+
+            </a>
+        }
+
     </div>
 
     <div class="inventory-table-wrap">
+
         <table class="data-table">
+
             <thead>
+
                 <tr>
+
                     <th>Category Name</th>
+
                     <th>Description</th>
+
                     <th>Status</th>
-                    <th>Actions</th>
+
+                    <!-- ACTIONS COLUMN: ADMIN ONLY -->
+                    @if (isAdmin)
+                    {
+                        <th>Actions</th>
+                    }
+
                 </tr>
+
             </thead>
 
             <tbody>
+
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td><strong>@item.Name</strong></td>
-                        <td>@item.Description</td>
+
+                        <!-- CATEGORY NAME -->
+
                         <td>
+                            <strong>@item.Name</strong>
+                        </td>
+
+                        <!-- CATEGORY DESCRIPTION -->
+
+                        <td>@item.Description</td>
+
+                        <!-- CATEGORY STATUS -->
+
+                        <td>
+
                             @if (item.IsActive)
                             {
-                                <span class="status-active">Active</span>
+                                <span class="status-active">
+                                    Active
+                                </span>
                             }
                             else
                             {
-                                <span class="status-inactive">Inactive</span>
+                                <span class="status-inactive">
+                                    Inactive
+                                </span>
                             }
-                        </td>
-                        <td>
-                            <div class="action-links">
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
 
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="delete-link">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
-                            </div>
                         </td>
+
+                        <!-- EDIT AND DELETE: ADMIN ONLY -->
+                        @if (isAdmin)
+                        {
+                            <td>
+
+                                <div class="action-links">
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id">
+
+                                        <i class="bi bi-pencil"></i>
+                                        Edit
+
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="delete-link">
+
+                                        <i class="bi bi-trash"></i>
+                                        Delete
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+                        }
+
                     </tr>
                 }
 
+                <!-- EMPTY CATEGORY LIST -->
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="4" class="empty-state">
+
+                        <td colspan="@(isAdmin ? 4 : 3)"
+                            class="empty-state">
+
                             No categories found.
-                            Click Add Category to create one.
+
+                            @if (isAdmin)
+                            {
+                                <span>
+                                    Click Add Category to create one.
+                                </span>
+                            }
+
                         </td>
+
                     </tr>
                 }
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>

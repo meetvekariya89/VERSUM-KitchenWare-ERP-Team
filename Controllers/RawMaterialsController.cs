@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VERSUM.KitchenWareERP.Data;
@@ -6,6 +7,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class RawMaterialsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,6 +18,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // LIST AND SEARCH
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Index(string? search)
         {
@@ -40,7 +43,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // ADD PAGE
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new RawMaterial
@@ -51,7 +56,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // SAVE MATERIAL
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("MaterialCode,Name,Unit,CurrentStock,MinimumStock,CostPerUnit,IsActive")]
@@ -82,7 +89,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // EDIT PAGE
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var material = await _context.RawMaterials
@@ -95,7 +104,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // UPDATE MATERIAL
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
@@ -142,7 +153,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // DELETE CONFIRMATION
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var material = await _context.RawMaterials
@@ -156,8 +169,10 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // DELETE MATERIAL
+        // ACCESS: ADMIN ONLY
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

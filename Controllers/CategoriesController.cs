@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VERSUM.KitchenWareERP.Data;
@@ -6,6 +7,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,6 +18,8 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // LIST AND SEARCH
+        // ACCESS: ADMIN AND STAFF
+        [HttpGet]
         public async Task<IActionResult> Index(string? search)
         {
             var query = _context.Categories.AsQueryable();
@@ -34,13 +38,18 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // CREATE PAGE
+        // ACCESS: ADMIN ONLY
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new Category());
         }
 
         // SAVE NEW CATEGORY
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("Name,Description,IsActive")] Category category)
@@ -57,6 +66,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // EDIT PAGE
+        // ACCESS: ADMIN ONLY
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -68,7 +80,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // SAVE EDIT
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
@@ -97,6 +111,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // DELETE CONFIRMATION PAGE
+        // ACCESS: ADMIN ONLY
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories
@@ -109,7 +126,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // CONFIRM DELETE
+        // ACCESS: ADMIN ONLY
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

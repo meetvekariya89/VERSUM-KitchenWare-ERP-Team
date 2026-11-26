@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,6 +33,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // PRODUCT LIST AND SEARCH
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Index(string? search)
         {
@@ -58,7 +61,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // CREATE PRODUCT PAGE
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             bool hasCategories = await _context.Categories
@@ -83,7 +88,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // SAVE NEW PRODUCT
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("ProductCode,Name,CategoryId,Description,SellingPrice,CostPrice,MinimumStock,CurrentStock,IsActive")]
@@ -131,7 +138,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // EDIT PRODUCT PAGE
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -145,7 +154,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // UPDATE PRODUCT AND STOCK
+        // ACCESS: ADMIN ONLY
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
@@ -213,7 +224,9 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // DELETE CONFIRMATION PAGE
+        // ACCESS: ADMIN ONLY
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _context.Products
@@ -228,8 +241,10 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // DELETE PRODUCT
+        // ACCESS: ADMIN ONLY
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

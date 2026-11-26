@@ -1,0 +1,163 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+
+    Context.Response.StatusCode = 403;
+
+    var canAccessDashboard =
+        User.Identity?.IsAuthenticated == true &&
+        (User.IsInRole("Admin") || User.IsInRole("Staff"));
+}
+
+<!-- =====================================
+     ACCESS DENIED PAGE
+====================================== -->
+
+<main class="access-denied-page">
+
+    <!-- VERSUM BRAND -->
+
+    <div class="access-denied-brand">
+
+        <div class="auth-brand-icon">
+            V
+        </div>
+
+        <div class="access-denied-brand-name">
+
+            <span class="access-denied-brand-title">
+                VERSUM
+            </span>
+
+            <span class="access-denied-brand-subtitle">
+                KITCHENWARE ERP
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- =================================
+         ACCESS DENIED CARD
+    ================================== -->
+
+    <div class="access-denied-card">
+
+        <!-- SECURITY ICON -->
+
+        <div class="access-denied-icon">
+
+            <i class="bi bi-shield-lock"
+               aria-hidden="true"></i>
+
+        </div>
+
+        <!-- ERROR CODE -->
+
+        <div class="access-denied-code">
+            403 — RESTRICTED ACCESS
+        </div>
+
+        <!-- MAIN HEADING -->
+
+        <h1>Access Denied</h1>
+
+        <!-- DESCRIPTION -->
+
+        <p class="access-denied-description">
+
+            You do not have permission to access this page.
+
+            Contact your administrator if you require access.
+
+        </p>
+
+        <!-- SECURITY NOTICE -->
+
+        <div class="access-denied-notice">
+
+            <i class="bi bi-info-circle"
+               aria-hidden="true"></i>
+
+            <span>
+                Your access is restricted by
+                role-based permissions.
+            </span>
+
+        </div>
+
+        <!-- =================================
+             NAVIGATION BUTTONS
+        ================================== -->
+
+        <div class="access-denied-actions">
+
+            @if (canAccessDashboard)
+            {
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="access-denied-button">
+
+                    <i class="bi bi-arrow-left"
+                       aria-hidden="true"></i>
+
+                    <span>Back to Dashboard</span>
+
+                </a>
+            }
+            else if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Account"
+                      asp-action="Logout"
+                      method="post">
+
+                    <button type="submit"
+                            class="access-denied-button">
+
+                        <i class="bi bi-box-arrow-right"
+                           aria-hidden="true"></i>
+
+                        <span>Sign Out</span>
+
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="access-denied-button">
+
+                    <i class="bi bi-box-arrow-in-right"
+                       aria-hidden="true"></i>
+
+                    <span>Back to Sign In</span>
+
+                </a>
+            }
+
+        </div>
+
+        <!-- CARD FOOTER -->
+
+        <div class="access-denied-card-footer">
+
+            <i class="bi bi-shield-check"
+               aria-hidden="true"></i>
+
+            VERSUM ERP &bull; Secure Workspace
+
+        </div>
+
+    </div>
+
+    <!-- BRAND FOOTER -->
+
+    <footer class="access-denied-footer">
+
+        PRECISION. STRENGTH. PERFECTION.
+
+    </footer>
+
+</main>

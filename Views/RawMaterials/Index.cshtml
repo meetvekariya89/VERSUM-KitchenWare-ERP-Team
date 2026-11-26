@@ -2,34 +2,54 @@
 
 @{
     ViewData["Title"] = "Raw Materials";
+
+    // Check administrator permissions
+    var isAdmin = User.IsInRole("Admin");
 }
 
 <div class="page-heading">
+
     <div>
         <h1>Raw Materials</h1>
         <p>Manage manufacturing materials and inventory.</p>
     </div>
-    <a asp-action="Create" class="versum-btn">
-        <i class="bi bi-plus-circle"></i> Add Material
-    </a>
+
+    <!-- ADD MATERIAL: ADMIN ONLY -->
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="versum-btn">
+            <i class="bi bi-plus-circle"></i> Add Material
+        </a>
+    }
+
 </div>
 
 <div class="panel">
-    <form method="get" asp-action="Index"
+
+    <!-- SEARCH MATERIALS: ADMIN AND STAFF -->
+
+    <form method="get"
+          asp-action="Index"
           class="mb-3 d-flex gap-2">
+
         <input type="search"
                name="search"
                value="@ViewBag.Search"
                class="versum-input"
                placeholder="Search materials..." />
+
         <button class="versum-btn" type="submit">
             Search
         </button>
+
     </form>
 
     <div class="table-responsive">
+
         <table class="table align-middle">
+
             <thead>
+
                 <tr>
                     <th>Code</th>
                     <th>Material</th>
@@ -37,47 +57,101 @@
                     <th>Minimum</th>
                     <th>Cost / Unit</th>
                     <th>Status</th>
-                    <th>Actions</th>
+
+                    <!-- ACTIONS COLUMN: ADMIN ONLY -->
+                    @if (isAdmin)
+                    {
+                        <th>Actions</th>
+                    }
+
                 </tr>
+
             </thead>
+
             <tbody>
+
                 @foreach (var m in Model)
                 {
                     <tr>
+
                         <td>@m.MaterialCode</td>
+
                         <td>@m.Name</td>
+
+                        <!-- CURRENT STOCK AND LOW STOCK INDICATOR -->
+
                         <td>
+
                             @m.CurrentStock.ToString("N3") @m.Unit
+
                             @if (m.CurrentStock <= m.MinimumStock)
                             {
                                 <span class="text-danger">
                                     Low
                                 </span>
                             }
+
                         </td>
-                        <td>@m.MinimumStock.ToString("N3") @m.Unit</td>
-                        <td>₹@m.CostPerUnit.ToString("N2")</td>
-                        <td>@(m.IsActive ? "Active" : "Inactive")</td>
+
+                        <!-- MINIMUM STOCK -->
+
                         <td>
-                            <a asp-action="Edit"
-                               asp-route-id="@m.Id">Edit</a>
-                            |
-                            <a asp-action="Delete"
-                               asp-route-id="@m.Id"
-                               class="text-danger">Delete</a>
+                            @m.MinimumStock.ToString("N3") @m.Unit
                         </td>
+
+                        <!-- COST PER UNIT -->
+
+                        <td>₹@m.CostPerUnit.ToString("N2")</td>
+
+                        <!-- MATERIAL STATUS -->
+
+                        <td>
+                            @(m.IsActive ? "Active" : "Inactive")
+                        </td>
+
+                        <!-- EDIT AND DELETE: ADMIN ONLY -->
+                        @if (isAdmin)
+                        {
+                            <td>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@m.Id">
+                                    Edit
+                                </a>
+
+                                |
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@m.Id"
+                                   class="text-danger">
+                                    Delete
+                                </a>
+
+                            </td>
+                        }
+
                     </tr>
                 }
+
+                <!-- EMPTY MATERIAL LIST -->
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="7" class="text-center py-4">
+
+                        <td colspan="@(isAdmin ? 7 : 6)"
+                            class="text-center py-4">
+
                             No raw materials found.
+
                         </td>
+
                     </tr>
                 }
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
-  

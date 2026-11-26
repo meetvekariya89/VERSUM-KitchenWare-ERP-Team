@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VERSUM.KitchenWareERP.Data;
@@ -6,6 +7,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class ReportsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -15,6 +17,8 @@ namespace VERSUM.KitchenWareERP.Controllers
             _context = context;
         }
 
+        // REPORTS AND ANALYTICS
+        // ACCESS: ADMIN AND STAFF
         public async Task<IActionResult> Index(
             DateTime? fromDate, DateTime? toDate)
         {

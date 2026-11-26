@@ -2,31 +2,72 @@
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var action = ViewContext.RouteData.Values["action"]?.ToString();
     var pageTitle = ViewData["Title"]?.ToString() ?? "Dashboard";
+
+    // Authentication and user profile
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdmin = User.IsInRole("Admin");
+    var isStaff = User.IsInRole("Staff");
+
+    var userEmail = User.Identity?.Name ?? "VERSUM User";
+
+    var userRole = isAdmin
+        ? "Administrator"
+        : isStaff
+            ? "Staff Member"
+            : "User";
+
+    var userInitial = !string.IsNullOrWhiteSpace(userEmail)
+        ? userEmail.Trim().Substring(0, 1).ToUpperInvariant()
+        : "V";
 }
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
 
     <title>@pageTitle - VERSUM ERP</title>
+
+    <!-- Bootstrap CSS -->
 
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
+    <!-- Bootstrap Icons -->
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Existing VERSUM ERP CSS -->
 
     <link rel="stylesheet"
           href="~/css/versum.css"
           asp-append-version="true" />
+
+    <!-- Authentication CSS -->
+
+    <link rel="stylesheet"
+          href="~/css/auth.css"
+          asp-append-version="true" />
+
 </head>
 
 <body>
+
     <div class="versum-shell">
 
+        <!-- ==========================================
+             SIDEBAR
+        =========================================== -->
+
         <aside class="versum-sidebar">
+
+            <!-- VERSUM Brand -->
 
             <a asp-controller="Home"
                asp-action="Index"
@@ -35,31 +76,53 @@
                 <div class="brand-icon">V</div>
 
                 <div>
-                    <div class="brand-title">VERSUM</div>
+
+                    <div class="brand-title">
+                        VERSUM
+                    </div>
+
                     <div class="brand-subtitle">
                         KITCHENWARE ERP
                     </div>
+
                 </div>
+
             </a>
 
-            <div class="nav-section">OVERVIEW</div>
+            <!-- ======================================
+                 OVERVIEW
+            ======================================= -->
+
+            <div class="nav-section">
+                OVERVIEW
+            </div>
 
             <a asp-controller="Home"
                asp-action="Index"
                class="side-link @(controller == "Home" && action == "Index" ? "active" : "")">
 
                 <i class="bi bi-grid side-icon"></i>
+
                 Dashboard
+
             </a>
 
-            <div class="nav-section">INVENTORY</div>
+            <!-- ======================================
+                 INVENTORY
+            ======================================= -->
+
+            <div class="nav-section">
+                INVENTORY
+            </div>
 
             <a asp-controller="Products"
                asp-action="Index"
                class="side-link @(controller == "Products" ? "active" : "")">
 
                 <i class="bi bi-box-seam side-icon"></i>
+
                 Products
+
             </a>
 
             <a asp-controller="Categories"
@@ -67,7 +130,9 @@
                class="side-link @(controller == "Categories" ? "active" : "")">
 
                 <i class="bi bi-collection side-icon"></i>
+
                 Categories
+
             </a>
 
             <a asp-controller="RawMaterials"
@@ -75,36 +140,57 @@
                class="side-link @(controller == "RawMaterials" ? "active" : "")">
 
                 <i class="bi bi-layers side-icon"></i>
+
                 Raw Materials
+
             </a>
 
-            <!-- STOCK MOVEMENTS - NEW MODULE -->
+            <!-- Stock Movements Module -->
+
             <a asp-controller="StockMovements"
                asp-action="Index"
                class="side-link @(controller == "StockMovements" ? "active" : "")">
 
                 <i class="bi bi-arrow-left-right side-icon"></i>
+
                 Stock Movements
+
             </a>
 
-            <div class="nav-section">MANUFACTURING</div>
+            <!-- ======================================
+                 MANUFACTURING
+            ======================================= -->
+
+            <div class="nav-section">
+                MANUFACTURING
+            </div>
 
             <a asp-controller="Production"
                asp-action="Index"
                class="side-link">
 
                 <i class="bi bi-gear-wide-connected side-icon"></i>
+
                 Production
+
             </a>
 
-            <div class="nav-section">BUSINESS</div>
+            <!-- ======================================
+                 BUSINESS
+            ======================================= -->
+
+            <div class="nav-section">
+                BUSINESS
+            </div>
 
             <a asp-controller="Dealers"
                asp-action="Index"
                class="side-link">
 
                 <i class="bi bi-people side-icon"></i>
+
                 Dealers
+
             </a>
 
             <a asp-controller="Purchases"
@@ -112,7 +198,9 @@
                class="side-link">
 
                 <i class="bi bi-bag side-icon"></i>
+
                 Purchases
+
             </a>
 
             <a asp-controller="Sales"
@@ -120,52 +208,181 @@
                class="side-link">
 
                 <i class="bi bi-receipt side-icon"></i>
+
                 Sales &amp; Invoices
+
             </a>
 
-            <div class="nav-section">ANALYTICS</div>
+            <!-- ======================================
+                 ANALYTICS
+            ======================================= -->
+
+            <div class="nav-section">
+                ANALYTICS
+            </div>
 
             <a asp-controller="Reports"
                asp-action="Index"
                class="side-link">
 
                 <i class="bi bi-bar-chart side-icon"></i>
+
                 Reports
+
             </a>
+
+            <!-- ======================================
+                 ADMINISTRATION
+
+                 Only visible to Administrator
+            ======================================= -->
+            @if (isAuthenticated && isAdmin)
+            {
+                <div class="nav-section">
+                    ADMINISTRATION
+                </div>
+
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="side-link @(controller == "Account" && action == "Register" ? "active" : "")">
+
+                    <i class="bi bi-person-plus side-icon"></i>
+
+                    Create Staff Account
+
+                </a>
+            }
 
         </aside>
 
+        <!-- ==========================================
+             MAIN WORKSPACE
+        =========================================== -->
+
         <main class="versum-main">
+
+            <!-- ======================================
+                 TOPBAR
+            ======================================= -->
 
             <header class="versum-topbar">
 
+                <!-- Current Page Title -->
+
                 <div class="topbar-title">
+
                     @pageTitle
+
                 </div>
+
+                <!-- User Profile and Logout -->
 
                 <div class="topbar-right">
 
-                    <span class="text-muted small d-none d-sm-inline">
-                        VERSUM Workspace
-                    </span>
+                    @if (isAuthenticated)
+                    {
+                        <!-- Logged-in User Details -->
 
-                    <div class="user-avatar">VE</div>
+                        <div class="erp-user-info">
+
+                            <span class="erp-user-email"
+                                  title="@userEmail">
+
+                                @userEmail
+
+                            </span>
+
+                            <span class="erp-user-role">
+
+                                @userRole
+
+                            </span>
+
+                        </div>
+
+                        <!-- Dynamic User Avatar -->
+
+                        <div class="erp-user-avatar"
+                             title="@userRole">
+
+                            @userInitial
+
+                        </div>
+
+                        <!-- Secure Logout -->
+
+                        <form asp-controller="Account"
+                              asp-action="Logout"
+                              asp-antiforgery="true"
+                              method="post"
+                              class="erp-logout-form">
+
+                            <button type="submit"
+                                    class="erp-logout-button">
+
+                                <i class="bi bi-box-arrow-right"></i>
+
+                                <span>Logout</span>
+
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- Guest Workspace -->
+
+                        <span class="text-muted small d-none d-sm-inline">
+
+                            VERSUM Workspace
+
+                        </span>
+
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="erp-logout-button">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            <span>Sign In</span>
+
+                        </a>
+                    }
 
                 </div>
 
             </header>
 
+            <!-- ======================================
+                 PAGE CONTENT
+
+                 Existing ERP pages remain unchanged
+            ======================================= -->
+
             <div class="page-content">
+
                 @RenderBody()
+
             </div>
 
         </main>
 
     </div>
 
+    <!-- ==========================================
+         JAVASCRIPT
+    =========================================== -->
+    <!-- jQuery for client-side form validation -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Page Specific Scripts -->
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
 </html>

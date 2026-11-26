@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VERSUM.KitchenWareERP.Data;
@@ -6,6 +7,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -15,6 +17,9 @@ namespace VERSUM.KitchenWareERP.Controllers
             _context = context;
         }
 
+        // DASHBOARD
+        // ACCESS: ADMIN AND STAFF
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var today = DateTime.Today;
@@ -134,11 +139,15 @@ namespace VERSUM.KitchenWareERP.Controllers
             return View(model);
         }
 
+        // PRIVACY PAGE
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        // ERROR PAGE
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View();

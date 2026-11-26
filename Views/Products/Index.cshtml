@@ -1,8 +1,10 @@
-﻿
-@model IEnumerable<VERSUM.KitchenWareERP.Models.Product>
+﻿@model IEnumerable<VERSUM.KitchenWareERP.Models.Product>
 
 @{
     ViewData["Title"] = "Products";
+
+    // Check administrator permissions
+    var isAdmin = User.IsInRole("Admin");
 }
 
 <div class="page-heading">
@@ -12,18 +14,26 @@
 
 @if (TempData["Success"] != null)
 {
-    <div class="versum-alert">@TempData["Success"]</div>
+    <div class="versum-alert">
+        @TempData["Success"]
+    </div>
 }
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
 }
 
 <div class="panel">
+
     <div class="inventory-toolbar">
 
-        <form asp-action="Index" method="get"
+        <!-- SEARCH PRODUCTS: ADMIN AND STAFF -->
+
+        <form asp-action="Index"
+              method="get"
               class="inventory-search">
 
             <input type="search"
@@ -32,88 +42,181 @@
                    placeholder="Search name or product code..." />
 
             <button type="submit" class="versum-btn">
-                <i class="bi bi-search"></i> Search
+
+                <i class="bi bi-search"></i>
+                Search
+
             </button>
 
             <a asp-action="Index"
                class="versum-btn versum-btn-outline">
+
                 Reset
+
             </a>
+
         </form>
 
-        <a asp-action="Create" class="versum-btn">
-            <i class="bi bi-plus-lg"></i>
-            Add Product
-        </a>
+        <!-- ADD PRODUCT: ADMIN ONLY -->
+        @if (isAdmin)
+        {
+            <a asp-action="Create"
+               class="versum-btn">
+
+                <i class="bi bi-plus-lg"></i>
+                Add Product
+
+            </a>
+        }
+
     </div>
 
     <div class="inventory-table-wrap">
+
         <table class="data-table">
+
             <thead>
+
                 <tr>
+
                     <th>Product Code</th>
+
                     <th>Product</th>
+
                     <th>Category</th>
+
                     <th>Price</th>
+
                     <th>Stock</th>
+
                     <th>Status</th>
-                    <th>Actions</th>
+
+                    <!-- ACTIONS COLUMN: ADMIN ONLY -->
+                    @if (isAdmin)
+                    {
+                        <th>Actions</th>
+                    }
+
                 </tr>
+
             </thead>
 
             <tbody>
+
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td><strong>@item.ProductCode</strong></td>
-                        <td>@item.Name</td>
-                        <td>@item.Category?.Name</td>
-                        <td>₹@item.SellingPrice.ToString("N2")</td>
+
+                        <!-- PRODUCT CODE -->
+
                         <td>
+                            <strong>@item.ProductCode</strong>
+                        </td>
+
+                        <!-- PRODUCT NAME -->
+
+                        <td>@item.Name</td>
+
+                        <!-- CATEGORY -->
+
+                        <td>@item.Category?.Name</td>
+
+                        <!-- SELLING PRICE -->
+
+                        <td>
+                            ₹@item.SellingPrice.ToString("N2")
+                        </td>
+
+                        <!-- CURRENT STOCK -->
+
+                        <td>
+
                             @item.CurrentStock
 
                             @if (item.CurrentStock <= item.MinimumStock)
                             {
-                                <span class="status-pill">Low</span>
+                                <span class="status-pill">
+                                    Low
+                                </span>
                             }
+
                         </td>
+
+                        <!-- PRODUCT STATUS -->
+
                         <td>
+
                             @if (item.IsActive)
                             {
-                                <span class="status-active">Active</span>
+                                <span class="status-active">
+                                    Active
+                                </span>
                             }
                             else
                             {
-                                <span class="status-inactive">Inactive</span>
+                                <span class="status-inactive">
+                                    Inactive
+                                </span>
                             }
-                        </td>
-                        <td>
-                            <div class="action-links">
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id">
-                                    Edit
-                                </a>
 
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="delete-link">
-                                    Delete
-                                </a>
-                            </div>
                         </td>
+
+                        <!-- EDIT AND DELETE: ADMIN ONLY -->
+                        @if (isAdmin)
+                        {
+                            <td>
+
+                                <div class="action-links">
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id">
+
+                                        Edit
+
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="delete-link">
+
+                                        Delete
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+                        }
+
                     </tr>
                 }
 
+                <!-- EMPTY PRODUCT INVENTORY -->
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="7" class="empty-state">
+
+                        <td colspan="@(isAdmin ? 7 : 6)"
+                            class="empty-state">
+
                             No products found.
-                            Click Add Product to get started.
+
+                            @if (isAdmin)
+                            {
+                                <span>
+                                    Click Add Product to get started.
+                                </span>
+                            }
+
                         </td>
+
                     </tr>
                 }
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>

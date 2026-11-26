@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class ProductionController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -39,6 +41,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // PRODUCTION HISTORY
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -60,6 +63,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // NEW PRODUCTION PAGE
+        // ACCESS: ADMIN AND STAFF
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -73,6 +77,7 @@ namespace VERSUM.KitchenWareERP.Controllers
         }
 
         // SAVE PRODUCTION
+        // ACCESS: ADMIN AND STAFF
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(

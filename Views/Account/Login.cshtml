@@ -1,0 +1,356 @@
+﻿@model VERSUM.KitchenWareERP.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-shell">
+
+    <!-- =====================================
+         LEFT SIDE - VERSUM BRAND PANEL
+    ====================================== -->
+
+    <aside class="auth-brand-panel">
+
+        <!-- Brand Logo -->
+
+        <div class="auth-brand">
+
+            <div class="auth-brand-icon">V</div>
+
+            <div class="auth-brand-name">
+                <span class="auth-brand-title">VERSUM</span>
+                <span class="auth-brand-subtitle">
+                    KITCHENWARE ERP
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Brand Content -->
+
+        <div class="auth-brand-content">
+
+            <div class="auth-eyebrow">
+                <span class="auth-eyebrow-line"></span>
+                INDUSTRIAL MANAGEMENT SYSTEM
+            </div>
+
+            <h1>
+                Manage smarter.
+                <span>Build stronger.</span>
+            </h1>
+
+            <p class="auth-brand-description">
+                One connected workspace for your inventory,
+                manufacturing, sales and business operations.
+            </p>
+
+            <!-- ERP Features -->
+
+            <div class="auth-features">
+
+                <!-- Inventory -->
+
+                <div class="auth-feature">
+
+                    <div class="auth-feature-icon">
+                        <i class="bi bi-box-seam"
+                           aria-hidden="true"></i>
+                    </div>
+
+                    <div class="auth-feature-text">
+                        <h6>Inventory Management</h6>
+                        <p>
+                            Manage products and stock efficiently.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Production -->
+
+                <div class="auth-feature">
+
+                    <div class="auth-feature-icon">
+                        <i class="bi bi-gear-wide-connected"
+                           aria-hidden="true"></i>
+                    </div>
+
+                    <div class="auth-feature-text">
+                        <h6>Production Tracking</h6>
+                        <p>
+                            Monitor manufacturing operations.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Sales -->
+
+                <div class="auth-feature">
+
+                    <div class="auth-feature-icon">
+                        <i class="bi bi-bar-chart-line"
+                           aria-hidden="true"></i>
+                    </div>
+
+                    <div class="auth-feature-text">
+                        <h6>Sales &amp; Analytics</h6>
+                        <p>
+                            Make informed business decisions.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Brand Footer -->
+
+        <div class="auth-brand-footer">
+            PRECISION. STRENGTH. PERFECTION.
+        </div>
+
+    </aside>
+
+    <!-- =====================================
+         RIGHT SIDE - LOGIN FORM
+    ====================================== -->
+
+    <main class="auth-form-panel">
+
+        <div class="auth-form-wrapper">
+
+            <!-- Login Header -->
+
+            <div class="auth-security-label">
+                <i class="bi bi-shield-check"
+                   aria-hidden="true"></i>
+                SECURE WORKSPACE
+            </div>
+
+            <h2 class="auth-heading">
+                Welcome back.
+            </h2>
+
+            <p class="auth-subheading">
+                Sign in to your VERSUM ERP account.
+            </p>
+
+            <!-- =================================
+                 LOGIN FORM
+            ================================== -->
+
+            <form asp-controller="Account"
+                  asp-action="Login"
+                  method="post"
+                  class="auth-form">
+
+                <!-- Preserve Return URL -->
+
+                <input asp-for="ReturnUrl"
+                       type="hidden" />
+
+                <!-- Validation Summary -->
+
+                <div asp-validation-summary="ModelOnly"
+                     class="auth-validation-summary"
+                     role="alert">
+                </div>
+
+                <!-- EMAIL ADDRESS -->
+
+                <div class="auth-field">
+
+                    <label asp-for="Email"
+                           class="auth-label">
+                        Email Address
+                    </label>
+
+                    <div class="auth-input-group">
+
+                        <i class="bi bi-envelope
+                        auth-input-icon"
+                           aria-hidden="true"></i>
+
+                        <input asp-for="Email"
+                               type="email"
+                               class="auth-input"
+                               placeholder="Enter your email address"
+                               autocomplete="username"
+                               autofocus />
+
+                    </div>
+
+                    <span asp-validation-for="Email"
+                          class="auth-field-error">
+                    </span>
+
+                </div>
+
+                <!-- PASSWORD -->
+
+                <div class="auth-field">
+
+                    <label asp-for="Password"
+                           class="auth-label">
+                        Password
+                    </label>
+
+                    <div class="auth-input-group">
+
+                        <i class="bi bi-lock
+                        auth-input-icon"
+                           aria-hidden="true"></i>
+
+                        <input asp-for="Password"
+                               type="password"
+                               id="loginPassword"
+                               class="auth-input auth-password-input"
+                               placeholder="Enter your password"
+                               autocomplete="current-password" />
+
+                        <button type="button"
+                                id="passwordToggle"
+                                class="auth-password-toggle"
+                                aria-label="Show password"
+                                aria-controls="loginPassword"
+                                aria-pressed="false"
+                                title="Show password">
+
+                            <i class="bi bi-eye"
+                               id="passwordIcon"
+                               aria-hidden="true">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                    <span asp-validation-for="Password"
+                          class="auth-field-error">
+                    </span>
+
+                </div>
+
+                <!-- REMEMBER ME -->
+
+                <div class="auth-form-options">
+
+                    <label class="auth-remember">
+
+                        <input asp-for="RememberMe"
+                               class="auth-checkbox" />
+
+                        <span>Remember me</span>
+
+                    </label>
+
+                </div>
+
+                <!-- SIGN IN BUTTON -->
+
+                <button type="submit"
+                        class="auth-submit-button">
+
+                    <span>Sign In</span>
+
+                    <i class="bi bi-arrow-right"
+                       aria-hidden="true"></i>
+
+                </button>
+
+            </form>
+
+            <!-- Security Notice -->
+
+            <div class="auth-help">
+
+                <i class="bi bi-info-circle"
+                   aria-hidden="true"></i>
+
+                <p>
+                    Authorized personnel only.
+                    Contact your administrator for access.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Copyright Footer -->
+
+        <footer class="auth-footer">
+            &copy; @DateTime.Now.Year VERSUM KitchenWare ERP.
+            All rights reserved.
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- =====================================
+     PAGE SCRIPTS
+====================================== -->
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordInput =
+                document.getElementById("loginPassword");
+
+            const passwordToggle =
+                document.getElementById("passwordToggle");
+
+            const passwordIcon =
+                document.getElementById("passwordIcon");
+
+            if (!passwordInput ||
+                !passwordToggle ||
+                !passwordIcon) {
+                return;
+            }
+
+            passwordToggle.addEventListener("click", function () {
+
+                const isPasswordHidden =
+                    passwordInput.type === "password";
+
+                passwordInput.type =
+                    isPasswordHidden ? "text" : "password";
+
+                passwordIcon.className =
+                    isPasswordHidden
+                        ? "bi bi-eye-slash"
+                        : "bi bi-eye";
+
+                const buttonLabel =
+                    isPasswordHidden
+                        ? "Hide password"
+                        : "Show password";
+
+                passwordToggle.setAttribute(
+                    "aria-label", buttonLabel);
+
+                passwordToggle.setAttribute(
+                    "title", buttonLabel);
+
+                passwordToggle.setAttribute(
+                    "aria-pressed",
+                    String(isPasswordHidden));
+
+            });
+
+        });
+
+    </script>
+
+}

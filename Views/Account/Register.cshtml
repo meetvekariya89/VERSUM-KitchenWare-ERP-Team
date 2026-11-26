@@ -1,0 +1,403 @@
+﻿@model VERSUM.KitchenWareERP.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Create Staff Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- =====================================
+     PAGE HEADER
+====================================== -->
+
+<div class="staff-page-header">
+
+    <div class="staff-page-eyebrow">
+        <i class="bi bi-people"
+           aria-hidden="true"></i>
+        USER MANAGEMENT
+    </div>
+
+    <h1>Create Staff Account</h1>
+
+    <p>
+        Manage authorized staff access to your
+        VERSUM workspace.
+    </p>
+
+</div>
+
+<!-- =====================================
+     SUCCESS MESSAGE
+====================================== -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        <i class="bi bi-check-circle-fill me-2"
+           aria-hidden="true"></i>
+
+        @TempData["Success"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close">
+        </button>
+
+    </div>
+}
+
+<!-- =====================================
+     STAFF REGISTRATION CARD
+====================================== -->
+
+<div class="staff-account-card">
+
+    <!-- Card Header -->
+
+    <div class="staff-card-header">
+
+        <div class="staff-card-icon">
+
+            <i class="bi bi-person-plus"
+               aria-hidden="true"></i>
+
+        </div>
+
+        <div class="staff-card-heading">
+
+            <h4>Staff Account Details</h4>
+
+            <p>
+                Enter the credentials for your new staff member.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- =================================
+         STAFF REGISTRATION FORM
+    ================================== -->
+
+    <form asp-controller="Account"
+          asp-action="Register"
+          method="post"
+          class="staff-register-form">
+
+        <!-- Validation Summary -->
+
+        <div asp-validation-summary="ModelOnly"
+             class="auth-validation-summary"
+             role="alert">
+        </div>
+
+        <!-- EMAIL ADDRESS -->
+
+        <div class="auth-field">
+
+            <label asp-for="Email"
+                   class="auth-label">
+                Email Address
+
+                <span class="staff-required">
+                    *
+                </span>
+            </label>
+
+            <div class="auth-input-group">
+
+                <i class="bi bi-envelope
+                auth-input-icon"
+                   aria-hidden="true"></i>
+
+                <input asp-for="Email"
+                       type="email"
+                       class="auth-input"
+                       placeholder="Enter staff email address"
+                       autocomplete="off" />
+
+            </div>
+
+            <span asp-validation-for="Email"
+                  class="auth-field-error">
+            </span>
+
+        </div>
+
+        <!-- PASSWORD FIELDS -->
+
+        <div class="staff-form-grid">
+
+            <!-- PASSWORD -->
+
+            <div class="auth-field">
+
+                <label for="staffPassword"
+                       class="auth-label">
+
+                    Password
+
+                    <span class="staff-required">
+                        *
+                    </span>
+
+                </label>
+
+                <div class="auth-input-group">
+
+                    <i class="bi bi-lock
+                    auth-input-icon"
+                       aria-hidden="true"></i>
+
+                    <input asp-for="Password"
+                           type="password"
+                           id="staffPassword"
+                           class="auth-input auth-password-input"
+                           placeholder="Create a strong password"
+                           autocomplete="new-password" />
+
+                    <button type="button"
+                            class="auth-password-toggle"
+                            data-password-target="staffPassword"
+                            aria-controls="staffPassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                            title="Show password">
+
+                        <i class="bi bi-eye"
+                           aria-hidden="true">
+                        </i>
+
+                    </button>
+
+                </div>
+
+                <span asp-validation-for="Password"
+                      class="auth-field-error">
+                </span>
+
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="auth-field">
+
+                <label for="staffConfirmPassword"
+                       class="auth-label">
+
+                    Confirm Password
+
+                    <span class="staff-required">
+                        *
+                    </span>
+
+                </label>
+
+                <div class="auth-input-group">
+
+                    <i class="bi bi-lock
+                    auth-input-icon"
+                       aria-hidden="true"></i>
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           id="staffConfirmPassword"
+                           class="auth-input auth-password-input"
+                           placeholder="Re-enter password"
+                           autocomplete="new-password" />
+
+                    <button type="button"
+                            class="auth-password-toggle"
+                            data-password-target="staffConfirmPassword"
+                            aria-controls="staffConfirmPassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                            title="Show password">
+
+                        <i class="bi bi-eye"
+                           aria-hidden="true">
+                        </i>
+
+                    </button>
+
+                </div>
+
+                <span asp-validation-for="ConfirmPassword"
+                      class="auth-field-error">
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- =================================
+             ASSIGNED ROLE
+        ================================== -->
+
+        <div class="auth-field">
+
+            <label for="staffRole"
+                   class="auth-label">
+                Assigned Role
+            </label>
+
+            <div class="auth-input-group">
+
+                <i class="bi bi-shield-check
+                auth-input-icon"
+                   aria-hidden="true"></i>
+
+                <input type="text"
+                       id="staffRole"
+                       class="auth-input staff-role-input"
+                       value="Staff Member"
+                       readonly />
+
+            </div>
+
+            <small class="staff-field-help">
+                New accounts are automatically assigned
+                the Staff role.
+            </small>
+
+        </div>
+
+        <!-- =================================
+             PASSWORD REQUIREMENTS
+        ================================== -->
+
+        <div class="staff-password-notice">
+
+            <div class="staff-notice-icon">
+
+                <i class="bi bi-info-circle"
+                   aria-hidden="true"></i>
+
+            </div>
+
+            <div class="staff-notice-content">
+
+                <strong>Password requirements</strong>
+
+                <p>
+                    Minimum 8 characters, including an uppercase
+                    letter, a lowercase letter, a number and
+                    a special character.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- =================================
+             FORM BUTTONS
+        ================================== -->
+
+        <div class="staff-form-actions">
+
+            <button type="submit"
+                    class="staff-submit-button">
+
+                <i class="bi bi-person-plus"
+                   aria-hidden="true"></i>
+
+                Create Staff Account
+
+            </button>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="staff-cancel-button">
+
+                <i class="bi bi-arrow-left"
+                   aria-hidden="true"></i>
+
+                Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- =====================================
+     PAGE SCRIPTS
+====================================== -->
+@section Scripts {
+
+    <!-- Load jQuery only when not already loaded -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery">
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordButtons =
+                document.querySelectorAll(
+                    "[data-password-target]"
+                );
+
+            passwordButtons.forEach(function (button) {
+
+                button.addEventListener("click", function () {
+
+                    const targetId =
+                        button.getAttribute(
+                            "data-password-target"
+                        );
+
+                    const passwordInput =
+                        document.getElementById(targetId);
+
+                    const passwordIcon =
+                        button.querySelector("i");
+
+                    if (!passwordInput || !passwordIcon) {
+                        return;
+                    }
+
+                    const isHidden =
+                        passwordInput.type === "password";
+
+                    passwordInput.type =
+                        isHidden ? "text" : "password";
+
+                    passwordIcon.className =
+                        isHidden
+                            ? "bi bi-eye-slash"
+                            : "bi bi-eye";
+
+                    const label =
+                        isHidden
+                            ? "Hide password"
+                            : "Show password";
+
+                    button.setAttribute(
+                        "aria-label", label);
+
+                    button.setAttribute(
+                        "title", label);
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(isHidden));
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

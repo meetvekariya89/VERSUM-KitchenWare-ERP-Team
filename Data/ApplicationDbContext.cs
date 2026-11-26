@@ -1,16 +1,22 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VERSUM.KitchenWareERP.Models;
 
 namespace VERSUM.KitchenWareERP.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+
+        // ==========================================
+        // EXISTING VERSUM ERP DATABASE TABLES
+        // ==========================================
 
         public DbSet<Category> Categories { get; set; } = null!;
 
@@ -30,9 +36,18 @@ namespace VERSUM.KitchenWareERP.Data
 
         public DbSet<SaleItem> SaleItems { get; set; } = null!;
 
+        // ==========================================
+        // DATABASE CONFIGURATION
+        // ==========================================
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Required for ASP.NET Core Identity tables
             base.OnModelCreating(modelBuilder);
+
+            // ======================================
+            // UNIQUE INDEXES
+            // ======================================
 
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.ProductCode)
@@ -57,6 +72,10 @@ namespace VERSUM.KitchenWareERP.Data
             modelBuilder.Entity<Sale>()
                 .HasIndex(s => s.InvoiceNumber)
                 .IsUnique();
+
+            // ======================================
+            // DATABASE RELATIONSHIPS
+            // ======================================
 
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
